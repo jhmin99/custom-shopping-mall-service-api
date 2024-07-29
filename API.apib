@@ -1,0 +1,1227 @@
+FORMAT: 1A
+HOST: BackendDomain:80/api
+
+# Custom Shopping Mall Service API
+
+## Roles
+- **SuperAdmin**: A super administrator with the highest level of access, capable of managing other administrators.
+- **Admin**: A general administrator who can manage users, categories, items, etc.
+- **User**: A regular user who can use the shopping mall features.
+- **Public**: Anyone, including users who are not logged in.
+
+-------
+## Group Authentication
+-------
+### Sign up for an account [POST /signup]
+- **Required Role**: Public
++ Request (application/json)
+    + Attributes (a)
++ Response 201 (application/json)
+    + Attributes (a)
++ Response 400 (application/json)
+    + Attributes (a)
++ Response 500 (application/json)
+    + Attributes (a)
+
+### Verify ID during sign up [POST /check-id]
+- **Required Role**: Public
++ Request (application/json)
+    + Attributes (a)
++ Response 200 (application/json)
+    + Attributes (a)
++ Response 400 (application/json)
+    + Attributes (a)
++ Response 500 (application/json)
+    + Attributes (a)
+
+
+### Login [POST /login]
+- **Required Role**: Public
++ Request (application/json)
+    + Attributes (a)
++ Response 201 (application/json)
+    + Attributes (a)
++ Response 400 (application/json)
+    + Attributes (a)
++ Response 500 (application/json)
+    + Attributes (a)
+
+### Logout [POST /logout]
+- **Required Role**: Public
+- **Required Role**: User/Admin/SuperAdmin
++ Request
+    + Headers 
+        X-XSRF-TOKEN: {X-XSRF-TOKEN}
+        Authorization: Bearer {BEARER-TOKEN}
++ Response 200 (application/json)
+    + Attributes (a)
++ Response 403 (application/json)
+    + Attributes (a)
++ Response 500 (application/json)
+    + Attributes (a)
+
+### Get CSRF token [GET /csrf-token]
+- **Required Role**: Public
++ Request 
++ Response 200 (application/json)
+    + Attributes (a)
++ Response 500 (application/json)
+    + Attributes (a)
+
+### Refresh access token [POST /refresh-token]
+- **Required Role**: Public
++ Request (application/json)
+    + Attributes (a)
++ Response 200 (application/json)
+    + Attributes (a)
++ Response 400 (application/json)
+    + Attributes (a)
++ Response 404 (application/json)
+    + Attributes (a)
++ Response 500 (application/json)
+    + Attributes (a)
+
+-----
+## Group SuperAdmin 
+-----
+### Create admin account [POST /super-admin/admins]
+- **Required Role**: SuperAdmin
++ Request (application/json)
+    + Headers 
+        X-XSRF-TOKEN: {X-XSRF-TOKEN}
+        Authorization: Bearer {BEARER-TOKEN} 
+    + Attributes (a)
++ Response 201 (application/json)
+    + Attributes (a)
++ Response 400 (application/json)
+    + Attributes (a)
++ Response 403 (application/json)
+    + Attributes (a)
++ Response 500 (application/json)
+    + Attributes (a)
+
+### View admin accounts [GET /super-admin/admins?page={page}&size={size}]
+- **Required Role**: SuperAdmin
++ Parameters
+    + page: `0` (number, optional) - The page number to retrieve, starting from 0
+    + size: `10` (number, optional) - The number of items per page
++ Request 
+    + Headers 
+        Authorization: Bearer {BEARER-TOKEN} 
++ Response 200 (application/json)
+    + Attributes (a)
++ Response 403 (application/json)
+    + Attributes (a)
++ Response 500 (application/json)
+    + Attributes (a)
+
+### Update admin accounts [PUT /super-admin/admins/{userId}]
+- **Required Role**: SuperAdmin
++ Parameters
+    + userId - The ID of the admin
++ Request (application/json)
+    + Headers 
+        X-XSRF-TOKEN: {X-XSRF-TOKEN}
+        Authorization: Bearer {BEARER-TOKEN} 
+    + Attributes (a)
++ Response 200 (application/json)
+    + Attributes (a)
++ Response 403 (application/json)
+    + Attributes (a)
++ Response 404 (application/json)
+    + Attributes (a)
++ Response 500 (application/json)
+    + Attributes (a)
+
+### Delete admin accounts [DELETE /super-admin/admins/{userId}]
+- **Required Role**: SuperAdmin
++ Parameters
+    + userId - The ID of the admin
++ Request 
+    + Headers 
+        X-XSRF-TOKEN: {X-XSRF-TOKEN}
+        Authorization: Bearer {BEARER-TOKEN} 
++ Response 200 (application/json)
+    + Attributes (a)
++ Response 403 (application/json)
+    + Attributes (a)
++ Response 404 (application/json)
+    + Attributes (a)
++ Response 500 (application/json)
+    + Attributes (a)
+
+-------
+## Group Admin
+------
+### View user accounts [GET /admin/users?page={page}&size={size}]
+- **Required Role**: Admin
++ Parameters
+    + page: `0` (number, optional) - The page number to retrieve, starting from 0
+    + size: `10` (number, optional) - The number of items per page
++ Request
+    + Headers 
+        Authorization: Bearer {BEARER-TOKEN} 
++ Response 200 (application/json)
+    + Attributes (a)
++ Response 403 (application/json)
+    + Attributes (a)
++ Response 500 (application/json)
+    + Attributes (a)
+
+### Retrieve user details [GET /admin/users/{userId}]
+- **Required Role**: Admin
++ Parameters
+    + userId - The ID of the user
++ Request (application/json)
+    + Headers 
+        Authorization: Bearer {BEARER-TOKEN} 
++ Response 200 (application/json)
+    + Attributes (a)
++ Response 403 (application/json)
+    + Attributes (a)
++ Response 404 (application/json)
+    + Attributes (a)
++ Response 500 (application/json)
+    + Attributes (a)
+
+### Create product category [POST /admin/categories]
+- **Required Role**: Admin
++ Request (application/json)
+    + Headers 
+        X-XSRF-TOKEN: {X-XSRF-TOKEN}
+        Authorization: Bearer {BEARER-TOKEN} 
+    + Attributes (a)
++ Response 201 (application/json)
+    + Attributes (a)
++ Response 400 (application/json)
+    + Attributes (a)
++ Response 403 (application/json)
+    + Attributes (a)
++ Response 500 (application/json)
+    + Attributes (a)
+
+### View product categories [GET /admin/categories?page={page}&size={size}]
+- **Required Role**: Admin
++ Parameters
+    + page: `0` (number, optional) - The page number to retrieve, starting from 0
+    + size: `10` (number, optional) - The number of items per page
++ Request 
+    + Headers 
+        Authorization: Bearer {BEARER-TOKEN} 
++ Response 200 (application/json)
+    + Attributes (a)
++ Response 403 (application/json)
+    + Attributes (a)
++ Response 500 (application/json)
+    + Attributes (a)
+
+### Update product category [PUT /admin/categories/{categoryId}]
+- **Required Role**: Admin
++ Parameters
+    + categoryId - The ID of the category
++ Request (application/json)
+    + Headers 
+        X-XSRF-TOKEN: {X-XSRF-TOKEN}
+        Authorization: Bearer {BEARER-TOKEN} 
+    + Attributes (a)
++ Response 200 (application/json)
+    + Attributes (a)
++ Response 400 (application/json)
+    + Attributes (a)
++ Response 403 (application/json)
+    + Attributes (a)
++ Response 404 (application/json)
+    + Attributes (a)
++ Response 500 (application/json)
+    + Attributes (a)
+
+### Delete product category [DELETE /admin/categories/{categoryId}]
+- **Required Role**: Admin
++ Parameters
+    + categoryId - The ID of the category
++ Request 
+    + Headers 
+        X-XSRF-TOKEN: {X-XSRF-TOKEN}
+        Authorization: Bearer {BEARER-TOKEN} 
++ Response 200 (application/json)
+    + Attributes (a)
++ Response 403 (application/json)
+    + Attributes (a)
++ Response 404 (application/json)
+    + Attributes (a)
++ Response 500 (application/json)
+    + Attributes (a)
+
+### Add item [POST /admin/items]
+- **Required Role**: Admin
++ Request (application/json)
+    + Headers 
+        X-XSRF-TOKEN: {X-XSRF-TOKEN}
+        Authorization: Bearer {BEARER-TOKEN} 
+    + Attributes (a)
++ Response 201 (application/json)
+    + Attributes (a)
++ Response 400 (application/json)
+    + Attributes (a)
++ Response 403 (application/json)
+    + Attributes (a)
++ Response 404 (application/json)
+    + Attributes (a)
++ Response 500 (application/json)
+    + Attributes (a)
+### Edit item [PUT /admin/items]
+- **Required Role**: Admin
++ Request (application/json)
+    + Headers 
+        X-XSRF-TOKEN: {X-XSRF-TOKEN}
+        Authorization: Bearer {BEARER-TOKEN} 
+    + Attributes (a)
++ Response 200 (application/json)
+    + Attributes (a)
++ Response 400 (application/json)
+    + Attributes (a)
++ Response 403 (application/json)
+    + Attributes (a)
++ Response 404 (application/json)
+    + Attributes (a)
++ Response 500 (application/json)
+    + Attributes (a)
+### Mark item as invalid [PATCH /admin/items/{itemId}/invalid]
+- **Required Role**: Admin
++ Parameters
+    + itemId - The ID of the item
++ Request (application/json)
+    + Headers 
+        X-XSRF-TOKEN: {X-XSRF-TOKEN}
+        Authorization: Bearer {BEARER-TOKEN} 
+    + Attributes (a)
++ Response 200 (application/json)
+    + Attributes (a)
++ Response 400 (application/json)
+    + Attributes (a)
++ Response 403 (application/json)
+    + Attributes (a)
++ Response 404 (application/json)
+    + Attributes (a)
++ Response 500 (application/json)
+    + Attributes (a)
+### Update stock levels [PATCH /admin/items/{itemId}/stock]
+- **Required Role**: Admin
++ Parameters
+    + itemId - The ID of the item
++ Request (application/json)
+    + Headers 
+        X-XSRF-TOKEN: {X-XSRF-TOKEN}
+        Authorization: Bearer {BEARER-TOKEN} 
+    + Attributes (a)
++ Response 200 (application/json)
+    + Attributes (a)
++ Response 400 (application/json)
+    + Attributes (a)
++ Response 403 (application/json)
+    + Attributes (a)
++ Response 404 (application/json)
+    + Attributes (a)
++ Response 500 (application/json)
+    + Attributes (a)
+### Notify users about stock alerts [POST /admin/items/{itemId}/notify]
+- **Required Role**: Admin
++ Parameters
+    + itemId - The ID of the item
++ Request (application/json)
+    + Headers 
+        X-XSRF-TOKEN: {X-XSRF-TOKEN}
+        Authorization: Bearer {BEARER-TOKEN} 
+    + Attributes (a)
++ Response 200 (application/json)
+    + Attributes (a)
++ Response 400 (application/json)
+    + Attributes (a)
++ Response 403 (application/json)
+    + Attributes (a)
++ Response 404 (application/json)
+    + Attributes (a)
++ Response 500 (application/json)
+    + Attributes (a)
+### Notify users about cart items [POST /admin/items/{itemId}/notify-cart]
+- **Required Role**: Admin
++ Parameters
+    + itemId - The ID of the item
++ Request (application/json)
+    + Headers 
+        X-XSRF-TOKEN: {X-XSRF-TOKEN}
+        Authorization: Bearer {BEARER-TOKEN} 
+    + Attributes (a)
++ Response 200 (application/json)
+    + Attributes (a)
++ Response 400 (application/json)
+    + Attributes (a)
++ Response 403 (application/json)
+    + Attributes (a)
++ Response 404 (application/json)
+    + Attributes (a)
++ Response 500 (application/json)
+    + Attributes (a)
+### Create a new coupon [POST /admin/coupons]
+- **Required Role**: Admin
++ Request (application/json)
+    + Headers 
+        X-XSRF-TOKEN: {X-XSRF-TOKEN}
+        Authorization: Bearer {BEARER-TOKEN} 
+    + Attributes (a)
++ Response 201 (application/json)
+    + Attributes (a)
++ Response 400 (application/json)
+    + Attributes (a)
++ Response 403 (application/json)
+    + Attributes (a)
++ Response 500 (application/json)
+    + Attributes (a)
+
+### Update an existing coupon [PUT /admin/coupons/{couponId}]
+- **Required Role**: Admin
++ Parameters
+    + couponId - The ID of the coupon
++ Request (application/json)
+    + Headers 
+        X-XSRF-TOKEN: {X-XSRF-TOKEN}
+        Authorization: Bearer {BEARER-TOKEN} 
+    + Attributes (a)
++ Response 200 (application/json)
+    + Attributes (a)
++ Response 400 (application/json)
+    + Attributes (a)
++ Response 403 (application/json)
+    + Attributes (a)
++ Response 404 (application/json)
+    + Attributes (a)
++ Response 500 (application/json)
+    + Attributes (a)
+
+### Delete a coupon [DELETE /admin/coupons/{couponId}]
+- **Required Role**: Admin
++ Parameters
+    + couponId - The ID of the coupon
++ Request 
+    + Headers 
+        X-XSRF-TOKEN: {X-XSRF-TOKEN}
+        Authorization: Bearer {BEARER-TOKEN} 
++ Response 200 (application/json)
+    + Attributes (a)
++ Response 403 (application/json)
+    + Attributes (a)
++ Response 404 (application/json)
+    + Attributes (a)
++ Response 500 (application/json)
+    + Attributes (a)
+
+### Assign coupon to a user [POST /admin/coupons/{couponId}/assign/{userId}]
+- **Required Role**: Admin
++ Parameters
+    + couponId - The ID of the coupon
+    + userId - The ID of the user
++ Request 
+    + Headers 
+        X-XSRF-TOKEN: {X-XSRF-TOKEN}
+        Authorization: Bearer {BEARER-TOKEN} 
++ Response 200 (application/json)
+    + Attributes (a)
++ Response 403 (application/json)
+    + Attributes (a)
++ Response 404 (application/json)
+    + Attributes (a)
++ Response 500 (application/json)
+    + Attributes (a)
+
+### Assign coupon to all user [POST /admin/coupons/{couponId}/assign/all] 
+- **Required Role**: Admin
++ Parameters 
+    + couponId - The ID of the coupon
++ Request 
+    + Headers 
+        X-XSRF-TOKEN: {X-XSRF-TOKEN}
+        Authorization: Bearer {BEARER-TOKEN} 
++ Response 200 (application/json)
+    + Attributes (a)
++ Response 403 (application/json)
+    + Attributes (a)
++ Response 404 (application/json)
+    + Attributes (a)
++ Response 500 (application/json)
+    + Attributes (a)
+
+#### Retrieve Coupon details [GET /admin/coupons/{couponId}]
+- **Required Role**: Admin
++ Parameters
+    + couponId - The ID of the coupon
++ Request 
+    + Headers 
+        Authorization: Bearer {BEARER-TOKEN} 
++ Response 200 (application/json)
+    + Attributes (a)
++ Response 403 (application/json)
+    + Attributes (a)
++ Response 404 (application/json)
+    + Attributes (a)
++ Response 500 (application/json)
+    + Attributes (a)
+
+### Retrieve user coupon status [GET /admin/coupons/users/{userId}?page={page}&size={size}]
+- **Required Role**: Admin
++ Parameters
+    + userId  - The ID of the user
+    + page: `0` (number, optional) - The page number to retrieve, starting from 0
+    + size: `10` (number, optional) - The number of items per page
++ Request 
+    + Headers 
+        Authorization: Bearer {BEARER-TOKEN} 
++ Response 200 (application/json)
+    + Attributes (a)
++ Response 403 (application/json)
+    + Attributes (a)
++ Response 404 (application/json)
+    + Attributes (a)
++ Response 500 (application/json)
+    + Attributes (a)
+
+
+### Create notice [POST /admin/notices]
+- **Required Role**: Admin
++ Request (application/json)
+    + Headers 
+        X-XSRF-TOKEN: {X-XSRF-TOKEN}
+        Authorization: Bearer {BEARER-TOKEN} 
+    + Attributes (a)
++ Response 201 (application/json)
+    + Attributes (a)
++ Response 400 (application/json)
+    + Attributes (a)
++ Response 403 (application/json)
+    + Attributes (a)
++ Response 500 (application/json)
+    + Attributes (a)
+
+
+### Post notice to a user [POST /admin/notices/{noticeId}/assign/{userId}]
+- **Required Role**: Admin
++ Parameters 
+    + noticeId - The ID of the notice
+    + userId - The ID of the user
++ Request 
+    + Headers 
+        X-XSRF-TOKEN: {X-XSRF-TOKEN}
+        Authorization: Bearer {BEARER-TOKEN} 
++ Response 200 (application/json)
+    + Attributes (a)
++ Response 400 (application/json)
+    + Attributes (a)
++ Response 403 (application/json)
+    + Attributes (a)
++ Response 404 (application/json)
+    + Attributes (a)
++ Response 500 (application/json)
+    + Attributes (a)
+
+### Post notice to all user [POST /admin/notices/{noticeId}/assign/all]
+- **Required Role**: Admin
++ Parameters 
+    + noticeId - The ID of the notice
++ Request 
+    + Headers 
+        X-XSRF-TOKEN: {X-XSRF-TOKEN}
+        Authorization: Bearer {BEARER-TOKEN} 
++ Response 200 (application/json)
+    + Attributes (a)
++ Response 400 (application/json)
+    + Attributes (a)
++ Response 403 (application/json)
+    + Attributes (a)
++ Response 404 (application/json)
+    + Attributes (a)
++ Response 500 (application/json)
+    + Attributes (a)
+
+### Edit notice [PUT /admin/notices/{noticeId}]
+- **Required Role**: Admin
++ Parameters 
+    + noticeId - The ID of the notice
++ Request (application/json)
+    + Headers 
+        X-XSRF-TOKEN: {X-XSRF-TOKEN}
+        Authorization: Bearer {BEARER-TOKEN} 
+    + Attributes (a)
++ Response 200 (application/json)
+    + Attributes (a)
++ Response 400 (application/json)
+    + Attributes (a)
++ Response 403 (application/json)
+    + Attributes (a)
++ Response 404 (application/json)
+    + Attributes (a)
++ Response 500 (application/json)
+    + Attributes (a)
+
+### Delete notice [DELETE /admin/notices/{noticeId}]
+- **Required Role**: Admin
++ Parameters 
+    + noticeId - The ID of the notice
++ Request 
+    + Headers 
+        X-XSRF-TOKEN: {X-XSRF-TOKEN}
+        Authorization: Bearer {BEARER-TOKEN} 
++ Response 200 (application/json)
+    + Attributes (a)
++ Response 403 (application/json)
+    + Attributes (a)
++ Response 404 (application/json)
+    + Attributes (a)
++ Response 500 (application/json)
+    + Attributes (a)
+
+### Delete review [DELETE /admin/reviews/{reviewId}]
+- **Required Role**: Admin
++ Parameters 
+    + reviewId - The ID of the review
++ Request 
+    + Headers 
+        X-XSRF-TOKEN: {X-XSRF-TOKEN}
+        Authorization: Bearer {BEARER-TOKEN} 
++ Response 200 (application/json)
+    + Attributes (a)
++ Response 403 (application/json)
+    + Attributes (a)
++ Response 404 (application/json)
+    + Attributes (a)
++ Response 500 (application/json)
+    + Attributes (a)
+
+
+### Reply to review [POST /admin/reviews/{reviewId}/reply]
+- **Required Role**: Admin
++ Parameters 
+    + reviewId - The ID of the review
++ Request (application/json)
+    + Headers 
+        X-XSRF-TOKEN: {X-XSRF-TOKEN}
+        Authorization: Bearer {BEARER-TOKEN} 
+    + Attributes (a)
++ Response 201 (application/json)
+    + Attributes (a)
++ Response 400 (application/json)
+    + Attributes (a)
++ Response 403 (application/json)
+    + Attributes (a)
++ Response 404 (application/json)
+    + Attributes (a)
++ Response 500 (application/json)
+    + Attributes (a)
+
+### Edit reply [PUT /admin/reviews/{reviewId}/reply/{replyId}]
+- **Required Role**: Admin
++ Parameters 
+    + reviewId - The ID of the review
+    + replyId - The ID of the reply
++ Request (application/json)
+    + Headers 
+        X-XSRF-TOKEN: {X-XSRF-TOKEN}
+        Authorization: Bearer {BEARER-TOKEN} 
+    + Attributes (a)
++ Response 200 (application/json)
+    + Attributes (a)
++ Response 400 (application/json)
+    + Attributes (a)
++ Response 403 (application/json)
+    + Attributes (a)
++ Response 404 (application/json)
+    + Attributes (a)
++ Response 500 (application/json)
+    + Attributes (a)
+
+### Delete reply [DELETE /admin/reviews/{reviewId}/reply/{replyId}]
+- **Required Role**: Admin
++ Parameters 
+    + reviewId - The ID of the review
+    + replyId - The ID of the reply
++ Request 
+    + Headers 
+        X-XSRF-TOKEN: {X-XSRF-TOKEN}
+        Authorization: Bearer {BEARER-TOKEN} 
++ Response 200 (application/json)
+    + Attributes (a)
++ Response 403 (application/json)
+    + Attributes (a)
++ Response 404 (application/json)
+    + Attributes (a)
++ Response 500 (application/json)
+    + Attributes (a)
+
+
+### Respond to inquiry [POST /admin/inquiries/{inquiryId}/respond]
+- **Required Role**: Admin
++ Parameters 
+    + inquiryId - The ID of the inquiry
++ Request (application/json)
+    + Headers 
+        X-XSRF-TOKEN: {X-XSRF-TOKEN}
+        Authorization: Bearer {BEARER-TOKEN} 
+    + Attributes (a)
++ Response 201 (application/json)
+    + Attributes (a)
++ Response 400 (application/json)
+    + Attributes (a)
++ Response 403 (application/json)
+    + Attributes (a)
++ Response 404 (application/json)
+    + Attributes (a)
++ Response 500 (application/json)
+    + Attributes (a)
+
+### Edit respond [PUT /admin/inquiries/{inquiryId}/respond/{respondId}]
+- **Required Role**: Admin
++ Parameters 
+    + inquiryId - The ID of the inquiry
+    + respondId - The ID of the respond
++ Request (application/json)
+    + Headers 
+        X-XSRF-TOKEN: {X-XSRF-TOKEN}
+        Authorization: Bearer {BEARER-TOKEN} 
+    + Attributes (a)
++ Response 200 (application/json)
+    + Attributes (a)
++ Response 400 (application/json)
+    + Attributes (a)
++ Response 403 (application/json)
+    + Attributes (a)
++ Response 404 (application/json)
+    + Attributes (a)
++ Response 500 (application/json)
+    + Attributes (a)
+
+### Delete respond [DELETE /admin/inquiries/{inquiryId}/respond/{respondId}]
+- **Required Role**: Admin
++ Parameters 
+    + inquiryId - The ID of the inquiry
+    + respondId - The ID of the respond
++ Request
+    + Headers 
+        X-XSRF-TOKEN: {X-XSRF-TOKEN}
+        Authorization: Bearer {BEARER-TOKEN} 
++ Response 200 (application/json)
+    + Attributes (a)
++ Response 403 (application/json)
+    + Attributes (a)
++ Response 404 (application/json)
+    + Attributes (a)
++ Response 500 (application/json)
+    + Attributes (a)
+
+### Update inquiry status [PATCH /admin/inquiries/{inquiryId}]
+- **Required Role**: Admin
++ Parameters 
+    + inquiryId - The ID of the inquiry
++ Request (application/json)
+    + Headers 
+        X-XSRF-TOKEN: {X-XSRF-TOKEN}
+        Authorization: Bearer {BEARER-TOKEN} 
+    + Attributes (a)
++ Response 200 (application/json)
+    + Attributes (a)
++ Response 400 (application/json)
+    + Attributes (a)
++ Response 403 (application/json)
+    + Attributes (a)
++ Response 404 (application/json)
+    + Attributes (a)
++ Response 500 (application/json)
+    + Attributes (a)
+
+
+### Retrieve user order details [GET /admin/orders/users/{userId}?page={page}&size={size}]
+- **Required Role**: Admin
++ Parameters
+    + userId  - The ID of the user
+    + page: `0` (number, optional) - The page number to retrieve, starting from 0
+    + size: `10` (number, optional) - The number of items per page
++ Request 
+    + Headers 
+        Authorization: Bearer {BEARER-TOKEN} 
++ Response 200 (application/json)
+    + Attributes (a)
++ Response 403 (application/json)
+    + Attributes (a)
++ Response 404 (application/json)
+    + Attributes (a)
++ Response 500 (application/json)
+    + Attributes (a)
+
+-------
+
+## Group User 
+
+------
+
+### Get user details [GET /users/{userId}]
+- **Required Role**: User
++ Parameters
+    + userId  - The ID of the user
++ Request 
+    + Headers 
+        Authorization: Bearer {BEARER-TOKEN} 
++ Response 200 (application/json)
+    + Attributes (a)
++ Response 403 (application/json)
+    + Attributes (a)
++ Response 404 (application/json)
+    + Attributes (a)
++ Response 500 (application/json)
+    + Attributes (a)
+### Update user details [PUT /users/{userId}]
+- **Required Role**: User
++ Parameters
+    + userId  - The ID of the user
++ Request (application/json)
+    + Headers 
+        X-XSRF-TOKEN: {X-XSRF-TOKEN}
+        Authorization: Bearer {BEARER-TOKEN} 
+    + Attributes (a)
++ Response 200 (application/json)
+    + Attributes (a)
++ Response 400 (application/json)
+    + Attributes (a)
++ Response 403 (application/json)
+    + Attributes (a)
++ Response 404 (application/json)
+    + Attributes (a)
++ Response 500 (application/json)
+    + Attributes (a)
+### View all notices [GET /users/{userId}/notices?page={page}&size={size}]
+- **Required Role**: User
++ Parameters
+    + userId  - The ID of the user
+    + page: `0` (number, optional) - The page number to retrieve, starting from 0
+    + size: `10` (number, optional) - The number of items per page
++ Request 
+    + Headers 
+        Authorization: Bearer {BEARER-TOKEN} 
++ Response 200 (application/json)
+    + Attributes (a)
++ Response 403 (application/json)
+    + Attributes (a)
++ Response 404 (application/json)
+    + Attributes (a)
++ Response 500 (application/json)
+    + Attributes (a)
+### Retrieve notice details [GET /users/{userId}/notices/{noticeId}]
+- **Required Role**: User
++ Parameters
+    + userId  - The ID of the user
+    + noticeId  - The ID of the notice
++ Request 
+    + Headers 
+        Authorization: Bearer {BEARER-TOKEN} 
++ Response 200 (application/json)
+    + Attributes (a)
++ Response 403 (application/json)
+    + Attributes (a)
++ Response 404 (application/json)
+    + Attributes (a)
++ Response 500 (application/json)
+    + Attributes (a)
+### View coupons [GET /users/{userId}/coupons/?status={status}&page={page}&size={size}]
+- **Required Role**: User
++ Parameters
+    + userId  - The ID of the user
+    + status: (string, optional) - The status criteria (one of `available`, `invalid`, 'used')
+    + page: `0` (number, optional) - The page number to retrieve, starting from 0
+    + size: `10` (number, optional) - The number of items per page
++ Request 
+    + Headers 
+        Authorization: Bearer {BEARER-TOKEN} 
++ Response 200 (application/json)
+    + Attributes (a)
++ Response 403 (application/json)
+    + Attributes (a)
++ Response 404 (application/json)
+    + Attributes (a)
++ Response 500 (application/json)
+    + Attributes (a)
+### Apply coupon [POST /users/{userId}/coupons/{couponId}/apply]
+- **Required Role**: User
++ Parameters
+    + userId  - The ID of the user
+    + couponId  - The ID of the coupon
++ Request 
+    + Headers 
+        X-XSRF-TOKEN: {X-XSRF-TOKEN}
+        Authorization: Bearer {BEARER-TOKEN} 
++ Response 200 (application/json)
+    + Attributes (a)
++ Response 403 (application/json)
+    + Attributes (a)
++ Response 404 (application/json)
+    + Attributes (a)
++ Response 500 (application/json)
+    + Attributes (a)
+### Add items to the cart [POST /users/{userId}/cart/{itemId}]
+- **Required Role**: User
++ Parameters
+    + userId  - The ID of the user
+    + itemId  - The ID of the item
++ Request 
+    + Headers 
+        X-XSRF-TOKEN: {X-XSRF-TOKEN}
+        Authorization: Bearer {BEARER-TOKEN} 
++ Response 200 (application/json)
+    + Attributes (a)
++ Response 403 (application/json)
+    + Attributes (a)
++ Response 404 (application/json)
+    + Attributes (a)
++ Response 500 (application/json)
+    + Attributes (a)
+### Update item quantities [PATCH /users/{userId}/cart/{itemId}]
+- **Required Role**: User
++ Parameters
+    + userId  - The ID of the user
+    + itemId  - The ID of the item
++ Request (application/json)
+    + Headers 
+        X-XSRF-TOKEN: {X-XSRF-TOKEN}
+        Authorization: Bearer {BEARER-TOKEN} 
+    + Attributes (a)
++ Response 200 (application/json)
+    + Attributes (a)
++ Response 400 (application/json)
+    + Attributes (a)
++ Response 403 (application/json)
+    + Attributes (a)
++ Response 404 (application/json)
+    + Attributes (a)
++ Response 500 (application/json)
+    + Attributes (a)
+### Remove items from the Cart [DELETE /users/{userId}/cart/{itemId}]
+- **Required Role**: User
++ Parameters
+    + userId  - The ID of the user
+    + itemId  - The ID of the item
++ Request 
+    + Headers 
+        X-XSRF-TOKEN: {X-XSRF-TOKEN}
+        Authorization: Bearer {BEARER-TOKEN} 
++ Response 200 (application/json)
+    + Attributes (a)
++ Response 403 (application/json)
+    + Attributes (a)
++ Response 404 (application/json)
+    + Attributes (a)
++ Response 500 (application/json)
+    + Attributes (a)
+### Add items to the wishlist [POST /users/{userId}/wishlist/{itemId}]
+- **Required Role**: User
++ Parameters
+    + userId  - The ID of the user
+    + itemId  - The ID of the item
++ Request 
+    + Headers 
+        X-XSRF-TOKEN: {X-XSRF-TOKEN}
+        Authorization: Bearer {BEARER-TOKEN} 
++ Response 200 (application/json)
+    + Attributes (a)
++ Response 403 (application/json)
+    + Attributes (a)
++ Response 404 (application/json)
+    + Attributes (a)
++ Response 500 (application/json)
+    + Attributes (a)
+### Remove items from the wishlist [DELETE /users/{userId}/wishlist/{itemId}]
+- **Required Role**: User
++ Parameters
+    + userId  - The ID of the user
+    + itemId  - The ID of the item
++ Request 
+    + Headers 
+        X-XSRF-TOKEN: {X-XSRF-TOKEN}
+        Authorization: Bearer {BEARER-TOKEN} 
++ Response 200 (application/json)
+    + Attributes (a)
++ Response 403 (application/json)
+    + Attributes (a)
++ Response 404 (application/json)
+    + Attributes (a)
++ Response 500 (application/json)
+    + Attributes (a)
+### Move items from the wishlist from the cart [POST /users/{userId}/wishlist/{itemId}/move-to-cart]
+- **Required Role**: User
++ Parameters
+    + userId  - The ID of the user
+    + itemId  - The ID of the item
++ Request 
+    + Headers 
+        X-XSRF-TOKEN: {X-XSRF-TOKEN}
+        Authorization: Bearer {BEARER-TOKEN} 
++ Response 200 (application/json)
+    + Attributes (a)
++ Response 403 (application/json)
+    + Attributes (a)
++ Response 404 (application/json)
+    + Attributes (a)
++ Response 500 (application/json)
+    + Attributes (a)
+### Submit review for purchased items [POST /users/{userId}/items/{itemId}/reviews]
+- **Required Role**: User
++ Parameters
+    + userId  - The ID of the user
+    + itemId  - The ID of the item
++ Request (application/json)
+    + Headers 
+        X-XSRF-TOKEN: {X-XSRF-TOKEN}
+        Authorization: Bearer {BEARER-TOKEN} 
+    + Attributes (a)
++ Response 201 (application/json)
+    + Attributes (a)
++ Response 400 (application/json)
+    + Attributes (a)
++ Response 403 (application/json)
+    + Attributes (a)
++ Response 404 (application/json)
+    + Attributes (a)
++ Response 500 (application/json)
+    + Attributes (a)
+### Edit review [PUT /users/{userId}/reviews/{reviewId}]
+- **Required Role**: User
++ Parameters
+    + userId  - The ID of the user
+    + reviewId  - The ID of the review
++ Request (application/json)
+    + Headers 
+        X-XSRF-TOKEN: {X-XSRF-TOKEN}
+        Authorization: Bearer {BEARER-TOKEN} 
+    + Attributes (a)
++ Response 200 (application/json)
+    + Attributes (a)
++ Response 400 (application/json)
+    + Attributes (a)
++ Response 403 (application/json)
+    + Attributes (a)
++ Response 404 (application/json)
+    + Attributes (a)
++ Response 500 (application/json)
+    + Attributes (a)
+### Delete review [DELETE /users/{userId}/reviews/{reviewId}]
+- **Required Role**: User
++ Parameters
+    + userId  - The ID of the user
+    + reviewId  - The ID of the review
++ Request 
+    + Headers 
+        X-XSRF-TOKEN: {X-XSRF-TOKEN}
+        Authorization: Bearer {BEARER-TOKEN} 
++ Response 200 (application/json)
+    + Attributes (a)
++ Response 403 (application/json)
+    + Attributes (a)
++ Response 404 (application/json)
+    + Attributes (a)
++ Response 500 (application/json)
+    + Attributes (a)
+### Submit item inquiry [POST /users/{userId}/items/{itemId}/inquiries]
+- **Required Role**: User
++ Parameters
+    + userId  - The ID of the user
+    + itemId  - The ID of the item
++ Request (application/json)
+    + Headers 
+        X-XSRF-TOKEN: {X-XSRF-TOKEN}
+        Authorization: Bearer {BEARER-TOKEN} 
+    + Attributes (a)
++ Response 201 (application/json)
+    + Attributes (a)
++ Response 400 (application/json)
+    + Attributes (a)
++ Response 403 (application/json)
+    + Attributes (a)
++ Response 404 (application/json)
+    + Attributes (a)
++ Response 500 (application/json)
+    + Attributes (a)
+### Submit customer inquiry [POST /users/{userId}/customer/inquiries]
+- **Required Role**: User
++ Parameters
+    + userId  - The ID of the user
++ Request (application/json)
+    + Headers 
+        X-XSRF-TOKEN: {X-XSRF-TOKEN}
+        Authorization: Bearer {BEARER-TOKEN} 
+    + Attributes (a)
++ Response 201 (application/json)
+    + Attributes (a)
++ Response 400 (application/json)
+    + Attributes (a)
++ Response 403 (application/json)
+    + Attributes (a)
++ Response 404 (application/json)
+    + Attributes (a)
++ Response 500 (application/json)
+    + Attributes (a)
+### View submitted inquiries [GET /users/{userId}/inquiry?page={page}&size={size}]
+- **Required Role**: User
++ Parameters
+    + userId  - The ID of the user
+    + page: `0` (number, optional) - The page number to retrieve, starting from 0
+    + size: `10` (number, optional) - The number of items per page
++ Request 
+    + Headers 
+        Authorization: Bearer {BEARER-TOKEN} 
++ Response 200 (application/json)
+    + Attributes (a)
++ Response 403 (application/json)
+    + Attributes (a)
++ Response 404 (application/json)
+    + Attributes (a)
++ Response 500 (application/json)
+    + Attributes (a)
+### Order items [POST /users/{userId}/orders]
+- **Required Role**: User
++ Parameters
+    + userId  - The ID of the user
++ Request 
+    + Headers 
+        X-XSRF-TOKEN: {X-XSRF-TOKEN}
+        Authorization: Bearer {BEARER-TOKEN} 
++ Response 200 (application/json)
+    + Attributes (a)
++ Response 403 (application/json)
+    + Attributes (a)
++ Response 404 (application/json)
+    + Attributes (a)
++ Response 500 (application/json)
+    + Attributes (a)
+### View order details [GET /users/{userId}/orders?page={page}&size={size}]
+- **Required Role**: User
++ Parameters
+    + userId  - The ID of the user
+    + page: `0` (number, optional) - The page number to retrieve, starting from 0
+    + size: `10` (number, optional) - The number of items per page
++ Request 
+    + Headers 
+        Authorization: Bearer {BEARER-TOKEN} 
++ Response 200 (application/json)
+    + Attributes (a)
++ Response 403 (application/json)
+    + Attributes (a)
++ Response 404 (application/json)
+    + Attributes (a)
++ Response 500 (application/json)
+    + Attributes (a)
+### Retrieve order details [GET /users/{userId}/orders/{orderId}]
+- **Required Role**: User
++ Parameters
+    + userId  - The ID of the user
+    + orderId  - The ID of the order
++ Request 
+    + Headers 
+        Authorization: Bearer {BEARER-TOKEN} 
++ Response 200 (application/json)
+    + Attributes (a)
++ Response 403 (application/json)
+    + Attributes (a)
++ Response 404 (application/json)
+    + Attributes (a)
++ Response 500 (application/json)
+    + Attributes (a)
+
+### Subscribe to stock alerts for items [POST /users/{userId}/items/{itemId}/subscribe-stock-alerts]
+- **Required Role**: User
++ Parameters
+    + userId  - The ID of the user
+    + itemId  - The ID of the item
++ Request 
+    + Headers 
+        X-XSRF-TOKEN: {X-XSRF-TOKEN}
+        Authorization: Bearer {BEARER-TOKEN} 
++ Response 200 (application/json)
+    + Attributes (a)
++ Response 403 (application/json)
+    + Attributes (a)
++ Response 404 (application/json)
+    + Attributes (a)
++ Response 500 (application/json)
+    + Attributes (a) 
+------
+## Group Public
+-------
+
+### Search items with keywords and filtering with category, min/max price range, average review rating [GET /items/search?keywords={keywords}&category={category}&minPrice={minPrice}&maxPrice={maxPrice}&minRating={minRating}&maxRating={maxRating}&page={page}&size={size}]
+- **Required Role**: Public
++ Parameters 
+    + keywords: (optional, array) - The search keywords (e.g., `keywords=clothes&keywords=tshirts`)
+    + category: (optional, array) - The category IDs (e.g., `category=1&category=2`)
+    + minPrice: `0` (number, optional) - The minimum price 
+    + maxPrice: `99999999` (number, optional) - The maximum price
+    + minRating: `0` (number, optional) - The minimum review rating
+    + maxRating: `5` (number, optional) - The maximum review rating
+    + page: `0` (number, optional) - The page number to retrieve, starting from 0
+    + size: `10` (number, optional) - The number of items per page
++ Request 
++ Response 200 (application/json)
+    + Attributes (a)
++ Response 404 (application/json)
+    + Attributes (a)
++ Response 500 (application/json)
+    + Attributes (a)
+### Retrieve item details [GET /items/{itemId}]
+- **Required Role**: Public
++ Parameters 
+    + itemId - The ID of the item
++ Request 
++ Response 200 (application/json)
+    + Attributes (a)
++ Response 404 (application/json)
+    + Attributes (a)
++ Response 500 (application/json)
+    + Attributes (a)
+### View reviews by rating or latest for a specific item [GET /items/{itemId}/reviews?sort={sort}&page={page}&size={size}]
+- **Required Role**: Public
++ Parameters 
+    + itemId - The ID of the item
+    + sort (optional) - The sorting criteria (one of `latest`, `oldest`, `rating_high`, `rating_low`)
+    + page: `0` (number, optional) - The page number to retrieve, starting from 0
+    + size: `10` (number, optional) - The number of items per page
++ Request 
++ Response 200 (application/json)
+    + Attributes (a)
++ Response 404 (application/json)
+    + Attributes (a)
++ Response 500 (application/json)
+    + Attributes (a)
+
+### View inquiries [GET /inquiries?type={type}&status={status}&page={page}&size={size}]
+- **Required Role**: Public
++ Parameters 
+    + type - The type criteria (one of `item`, `customer`)
+    + status (optional)  - The status criteria (one of `resolved`, `unresolved`)
+    + page: `0` (number, optional) - The page number to retrieve, starting from 0
+    + size: `10` (number, optional) - The number of items per page
++ Request 
++ Response 200 (application/json)
+    + Attributes (a)
++ Response 404 (application/json)
+    + Attributes (a)
++ Response 500 (application/json)
+    + Attributes (a)
+
+### View inquiry details [GET /inquiries/{inquiryId}]
+- **Required Role**: Public
++ Parameters 
+    + inquiryId - The ID of the inquiry
++ Request 
++ Response 200 (application/json)
+    + Attributes (a)
++ Response 404 (application/json)
+    + Attributes (a)
++ Response 500 (application/json)
+    + Attributes (a)
+
+# Data Structures
+
+## a
