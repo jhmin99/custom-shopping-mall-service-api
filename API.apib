@@ -7,101 +7,164 @@ HOST: BackendDomain:80/api
 - **SuperAdmin**: A super administrator with the highest level of access, capable of managing other administrators.
 - **Admin**: A general administrator who can manage users, categories, items, etc.
 - **User**: A regular user who can use the shopping mall features.
-- **Public**: Anyone, including users who are not logged in.
+- **Public**: Anyone, including users who logged in.
 
 -------
 ## Group Authentication
 -------
 ### Sign up for an account [POST /signup]
 - **Required Role**: Public
+- **Exception**: 
+    + Response Code: 400
+        + MethodArgumentNotValidException - Validation failed 
+        + DuplicateNameException - Duplicate ID exists
+        + PasswordMismatchException - Password mismatch
+        + DateTimeParseException - Unable to convert the birthdate string to LocalDate
+    + Response Code: 500
+        + Exception - Internal server error occurred
+
 + Request (application/json)
-    + Attributes (a)
+    + Attributes (SignUpDto)
 + Response 201 (application/json)
-    + Attributes (a)
+    + Attributes (ResponseDto)
 + Response 400 (application/json)
-    + Attributes (a)
+    + MethodArgumentNotValidException 
+    + Attributes (MethodArgumentNotValidException)
++ Response 400 (application/json)
+    + DuplicateNameException, PasswordMismatchException, DateTimeParseException
+    + Attributes (ErrorAttributes)
 + Response 500 (application/json)
-    + Attributes (a)
+    + Attributes (Exception)
 
 ### Verify ID during sign up [POST /check-id]
 - **Required Role**: Public
+- **Exception**: 
+    + Response Code: 400
+        + MethodArgumentNotValidException - Validation failed 
+        + DuplicateNameException - Duplicate ID exists
+    + Response Code: 500
+        + Exception - Internal server error occurred
 + Request (application/json)
-    + Attributes (a)
+    + Attributes (SignUpDto)
 + Response 200 (application/json)
-    + Attributes (a)
+    + Attributes (ResponseDto)
 + Response 400 (application/json)
-    + Attributes (a)
+    + MethodArgumentNotValidException 
+    + Attributes (MethodArgumentNotValidException)
++ Response 400 (application/json)
+    + DuplicateNameException
+    + Attributes (ErrorAttributes)
 + Response 500 (application/json)
-    + Attributes (a)
+    + Attributes (Exception)
 
 
 ### Login [POST /login]
 - **Required Role**: Public
+- **Exception**: 
+    + Response Code: 400
+        + BadCredentialsException - Credentials provided are invalid
+    + Response Code: 500
+        + Exception - Internal server error occurred
 + Request (application/json)
-    + Attributes (a)
+    + Attributes(LoginRequestDto)
 + Response 201 (application/json)
-    + Attributes (a)
+    + Attributes(LoginResponseDto)
 + Response 400 (application/json)
-    + Attributes (a)
+    + Attributes (BadCredentialsException)
 + Response 500 (application/json)
-    + Attributes (a)
+    + Attributes (Exception)
 
 ### Logout [POST /logout]
-- **Required Role**: Public
 - **Required Role**: User/Admin/SuperAdmin
+- **Exception**: 
+    + Response Code: 403
+        + AccessDeniedException 
+    + Response Code: 500
+        + Exception - Internal server error occurred
 + Request
     + Headers 
         X-XSRF-TOKEN: {X-XSRF-TOKEN}
         Authorization: Bearer {BEARER-TOKEN}
 + Response 200 (application/json)
-    + Attributes (a)
+    + Attributes (ResponseDto)
 + Response 403 (application/json)
-    + Attributes (a)
+    + Attributes (AccessDeniedException)
 + Response 500 (application/json)
-    + Attributes (a)
+    + Attributes (Exception)
 
 ### Get CSRF token [GET /csrf-token]
 - **Required Role**: Public
+- **Exception**: 
+    + Response Code: 500
+        + Exception - Internal server error occurred
 + Request 
 + Response 200 (application/json)
-    + Attributes (a)
+    + Attributes (CSRF_Token)
 + Response 500 (application/json)
-    + Attributes (a)
+    + Attributes (Exception)
 
 ### Refresh access token [POST /refresh-token]
 - **Required Role**: Public
+- **Exception**: 
+    + Response Code: 400
+        + InvalidTokenException - token is invalid
+    + Response Code: 404
+        + NotFoundException - user associated with the refresh token is not found
+    + Response Code: 500
+        + Exception - Internal server error occurred
 + Request (application/json)
-    + Attributes (a)
+    + Attributes (RefreshTokenRequest)
 + Response 200 (application/json)
-    + Attributes (a)
+    + Attributes (RefreshTokenResponse)
 + Response 400 (application/json)
-    + Attributes (a)
+    + Attributes (InvalidTokenException)
 + Response 404 (application/json)
-    + Attributes (a)
+    + Attributes (NotFoundException)
 + Response 500 (application/json)
-    + Attributes (a)
+    + Attributes (Exception)
 
 -----
 ## Group SuperAdmin 
 -----
 ### Create admin account [POST /super-admin/admins]
 - **Required Role**: SuperAdmin
+- **Exception**: 
+    + Response Code: 400
+        + MethodArgumentNotValidException - Validation failed 
+        + DuplicateNameException - Duplicate ID exists
+        + PasswordMismatchException - Password mismatch
+        + DateTimeParseException - Unable to convert the birthdate string to LocalDate
+    + Response Code: 403
+        + AccessDeniedException 
+    + Response Code: 500
+        + Exception - Internal server error occurred
 + Request (application/json)
     + Headers 
         X-XSRF-TOKEN: {X-XSRF-TOKEN}
         Authorization: Bearer {BEARER-TOKEN} 
-    + Attributes (a)
+    + Attributes (SignUpDto)
 + Response 201 (application/json)
-    + Attributes (a)
+    + Attributes (ResponseDto)
 + Response 400 (application/json)
-    + Attributes (a)
+    + MethodArgumentNotValidException 
+    + Attributes (MethodArgumentNotValidException)
++ Response 400 (application/json)
+    + DuplicateNameException, PasswordMismatchException, DateTimeParseException
+    + Attributes (ErrorAttributes)
 + Response 403 (application/json)
-    + Attributes (a)
+    + Attributes (AccessDeniedException)
 + Response 500 (application/json)
-    + Attributes (a)
+    + Attributes (Exception)
 
 ### View admin accounts [GET /super-admin/admins?page={page}&size={size}]
 - **Required Role**: SuperAdmin
+- **Exception**: 
+    + Response Code: 400
+        + TypeMismatchException - Method argument (path variable or query parameter) cannot be converted to the expected type
+    + Response Code: 403
+        + AccessDeniedException 
+    + Response Code: 500
+        + Exception - Internal server error occurred
 + Parameters
     + page: `0` (number, optional) - The page number to retrieve, starting from 0
     + size: `10` (number, optional) - The number of items per page
@@ -109,32 +172,64 @@ HOST: BackendDomain:80/api
     + Headers 
         Authorization: Bearer {BEARER-TOKEN} 
 + Response 200 (application/json)
-    + Attributes (a)
+    + Attributes (Pagination)
+        + content (array[AdminResponseDto])
++ Response 400 (applicaation/json)
+    + Attributes (TypeMismatchException)
 + Response 403 (application/json)
-    + Attributes (a)
+    + Attributes (AccessDeniedException)
 + Response 500 (application/json)
-    + Attributes (a)
+    + Attributes (Exception)
 
-### Update admin accounts [PUT /super-admin/admins/{userId}]
+### Patch admin accounts [PATCH /super-admin/admins/{userId}]
 - **Required Role**: SuperAdmin
+- **Exception**: 
+    + Response Code: 400
+        + MethodArgumentNotValidException - Validation failed 
+        + TypeMismatchException - Method argument (path variable or query parameter) cannot be converted to the expected type
+        + HttpMessageNotReadableException - Request body cannot be read or parsed into the desired object due to malformed JSON or incompatible data types
+    + Response Code: 403
+        + AccessDeniedException 
+    + Response Code: 404
+        + NotFoundException - the user is not found
+    + Response Code: 500
+        + Exception - Internal server error occurred
 + Parameters
     + userId - The ID of the admin
 + Request (application/json)
     + Headers 
         X-XSRF-TOKEN: {X-XSRF-TOKEN}
         Authorization: Bearer {BEARER-TOKEN} 
-    + Attributes (a)
+    + Attributes (PatchAdminDto)
 + Response 200 (application/json)
-    + Attributes (a)
+    + Attributes (ResponseDto)
++ Response 400 (application/json)
+    + MethodArgumentNotValidException 
+    + Attributes (MethodArgumentNotValidException)
++ Response 400 (application/json)
+    + HttpMessageNotReadableException 
+    + Attributes (HttpMessageNotReadableException)
++ Response 400 (application/json)
+    + TypeMismatchException
+    + Attributes (TypeMismatchException)
 + Response 403 (application/json)
-    + Attributes (a)
+    + Attributes (AccessDeniedException)
 + Response 404 (application/json)
-    + Attributes (a)
+    + Attributes (NotFoundException)
 + Response 500 (application/json)
-    + Attributes (a)
+    + Attributes (Exception)
 
 ### Delete admin accounts [DELETE /super-admin/admins/{userId}]
 - **Required Role**: SuperAdmin
+- **Exception**: 
+    + Response Code: 400
+        + TypeMismatchException - Method argument (path variable or query parameter) cannot be converted to the expected type
+    + Response Code: 403
+        + AccessDeniedException 
+    + Response Code: 404
+        + NotFoundException -  The user is not found
+    + Response Code: 500
+        + Exception - Internal server error occurred
 + Parameters
     + userId - The ID of the admin
 + Request 
@@ -142,19 +237,28 @@ HOST: BackendDomain:80/api
         X-XSRF-TOKEN: {X-XSRF-TOKEN}
         Authorization: Bearer {BEARER-TOKEN} 
 + Response 200 (application/json)
-    + Attributes (a)
+    + Attributes (ResponseDto)
++ Response 400 (application/json)
+    + Attributes (TypeMismatchException)
 + Response 403 (application/json)
-    + Attributes (a)
+    + Attributes (AccessDeniedException)
 + Response 404 (application/json)
-    + Attributes (a)
+    + Attributes (NotFoundException)
 + Response 500 (application/json)
-    + Attributes (a)
+    + Attributes (Exception)
 
 -------
 ## Group Admin
 ------
 ### View user accounts [GET /admin/users?page={page}&size={size}]
 - **Required Role**: Admin
+- **Exception**: 
+    + Response Code: 400
+        + TypeMismatchException - Method argument (path variable or query parameter) cannot be converted to the expected type
+    + Response Code: 403
+        + AccessDeniedException 
+    + Response Code: 500
+        + Exception - Internal server error occurred
 + Parameters
     + page: `0` (number, optional) - The page number to retrieve, starting from 0
     + size: `10` (number, optional) - The number of items per page
@@ -162,46 +266,79 @@ HOST: BackendDomain:80/api
     + Headers 
         Authorization: Bearer {BEARER-TOKEN} 
 + Response 200 (application/json)
-    + Attributes (a)
+    + Attributes (Pagination)
+        + content (array[UserResponseDto])
++ Response 400 (application/json)
+    + Attributes (TypeMismatchException)
 + Response 403 (application/json)
-    + Attributes (a)
+    + Attributes (AccessDeniedException)
 + Response 500 (application/json)
-    + Attributes (a)
+    + Attributes (Exception)
 
 ### Retrieve user details [GET /admin/users/{userId}]
 - **Required Role**: Admin
+- **Exception**: 
+    + Response Code: 400
+        + TypeMismatchException - Method argument (path variable or query parameter) cannot be converted to the expected type
+    + Response Code: 403
+        + AccessDeniedException 
+    + Response Code: 404
+        + NotFoundException -  The user is not found
+    + Response Code: 500
+        + Exception - Internal server error occurred
 + Parameters
     + userId - The ID of the user
 + Request (application/json)
     + Headers 
         Authorization: Bearer {BEARER-TOKEN} 
 + Response 200 (application/json)
-    + Attributes (a)
+    + Attributes (UserSummaryDto)
++ Response 400 (application/json)
+    + Attributes (TypeMismatchException)
 + Response 403 (application/json)
-    + Attributes (a)
+    + Attributes (AccessDeniedException)
 + Response 404 (application/json)
-    + Attributes (a)
+    + Attributes (NotFoundException)
 + Response 500 (application/json)
-    + Attributes (a)
+    + Attributes (Exception)
 
 ### Create product category [POST /admin/categories]
 - **Required Role**: Admin
+- **Exception**: 
+    + Response Code: 400
+        + DuplicateNameException - Duplicate name exists
+        + MethodArgumentNotValidException - Validation failed 
+    + Response Code: 403
+        + AccessDeniedException 
+    + Response Code: 500
+        + Exception - Internal server error occurred
 + Request (application/json)
     + Headers 
         X-XSRF-TOKEN: {X-XSRF-TOKEN}
         Authorization: Bearer {BEARER-TOKEN} 
-    + Attributes (a)
+    + Attributes (CategoryRequestDto)
 + Response 201 (application/json)
-    + Attributes (a)
+    + Attributes (ResponseDto)
 + Response 400 (application/json)
-    + Attributes (a)
+    + MethodArgumentNotValidException 
+    + Attributes (MethodArgumentNotValidException)
++ Response 400 (application/json)
+    + DuplicateNameException
+    + Attributes (DuplicateNameException)
 + Response 403 (application/json)
-    + Attributes (a)
+    + Attributes (AccessDeniedException)
 + Response 500 (application/json)
-    + Attributes (a)
+    + Attributes (Exception)
 
 ### View product categories [GET /admin/categories?page={page}&size={size}]
 - **Required Role**: Admin
+- **Exception**: 
+    + Response Code: 400
+        + TypeMismatchException - Method argument (path variable or query parameter) cannot be converted to the expected type
+    + Response Code: 403
+        + AccessDeniedException 
+    + Response Code: 500
+        + Exception - Internal server error occurred
 + Parameters
     + page: `0` (number, optional) - The page number to retrieve, starting from 0
     + size: `10` (number, optional) - The number of items per page
@@ -209,34 +346,62 @@ HOST: BackendDomain:80/api
     + Headers 
         Authorization: Bearer {BEARER-TOKEN} 
 + Response 200 (application/json)
-    + Attributes (a)
+    + Attributes (Pagination)
+        + content (array[CategoryResponseDto])
++ Response 400 (application/json)
+    + Attributes (TypeMismatchException)
 + Response 403 (application/json)
-    + Attributes (a)
+    + Attributes (AccessDeniedException)
 + Response 500 (application/json)
-    + Attributes (a)
+    + Attributes (Exception)
 
 ### Update product category [PUT /admin/categories/{categoryId}]
 - **Required Role**: Admin
+- **Exception**: 
+    + Response Code: 400
+        + TypeMismatchException - Method argument (path variable or query parameter) cannot be converted to the expected type
+        + MethodArgumentNotValidException - Validation failed 
+    + Response Code: 403
+        + AccessDeniedException 
+    + Response Code: 404
+        + NotFoundException -  The category is not found
+    + Response Code: 500
+        + Exception - Internal server error occurred
 + Parameters
     + categoryId - The ID of the category
 + Request (application/json)
     + Headers 
         X-XSRF-TOKEN: {X-XSRF-TOKEN}
         Authorization: Bearer {BEARER-TOKEN} 
-    + Attributes (a)
+    + Attributes (CategoryRequestDto)
 + Response 200 (application/json)
-    + Attributes (a)
+    + Attributes (ResponseDto)
 + Response 400 (application/json)
-    + Attributes (a)
+    + MethodArgumentNotValidException 
+    + Attributes (MethodArgumentNotValidException)
++ Response 400 (application/json)
+    + TypeMismatchException
+    + Attributes (TypeMismatchException)
 + Response 403 (application/json)
-    + Attributes (a)
+    + Attributes (AccessDeniedException)
 + Response 404 (application/json)
-    + Attributes (a)
+    + Attributes (NotFoundException)
 + Response 500 (application/json)
-    + Attributes (a)
+    + Attributes (Exception)
 
 ### Delete product category [DELETE /admin/categories/{categoryId}]
 - **Required Role**: Admin
+- **Exception**: 
+    + Response Code: 400
+        + TypeMismatchException - Method argument (path variable or query parameter) cannot be converted to the expected type
+    + Response Code: 403
+        + AccessDeniedException 
+    + Response Code: 404
+        + NotFoundException -  The category is not found
+    + Response Code: 409
+        + HasRelatedEntitiesException - The category contains related entities (items) and cannot be deleted
+    + Response Code: 500
+        + Exception - Internal server error occurred
 + Parameters
     + categoryId - The ID of the category
 + Request 
@@ -244,162 +409,352 @@ HOST: BackendDomain:80/api
         X-XSRF-TOKEN: {X-XSRF-TOKEN}
         Authorization: Bearer {BEARER-TOKEN} 
 + Response 200 (application/json)
-    + Attributes (a)
+    + Attributes (ResponseDto)
++ Response 400 (application/json)
+    + Attributes (TypeMismatchException)
 + Response 403 (application/json)
-    + Attributes (a)
+    + Attributes (AccessDeniedException)
 + Response 404 (application/json)
-    + Attributes (a)
+    + Attributes (NotFoundException)
++ Response 409 (application/json)
+    + Attributes (HasRelatedEntitiesException)
 + Response 500 (application/json)
-    + Attributes (a)
+    + Attributes (Exception)
 
-### Add item [POST /admin/items]
+### Create item [POST /admin/items]
 - **Required Role**: Admin
-+ Request (application/json)
+- **Exception**: 
+    + Response Code: 400
+        + MethodArgumentNotValidException - Validation failed 
+    + Response Code: 403
+        + AccessDeniedException 
+    + Response Code: 404
+        + NotFoundException -  Item or category not found
+    + Response Code: 500
+        + Exception - Internal server error occurred
++ Request (multipart/form-data)
     + Headers 
         X-XSRF-TOKEN: {X-XSRF-TOKEN}
         Authorization: Bearer {BEARER-TOKEN} 
-    + Attributes (a)
+    + Body
+
+
+        --boundary_string
+        Content-Disposition: form-data; name="item"
+        Content-Type: application/json
+        {
+            "name": string - Name must be between 3 and 50 characters. Name is a required field.
+            "price": number - Price must be greater than or equal to 0. Price is a required field.
+            "stock": number - Stock must be greater than or equal to 0. Stock is a required field.
+            "keyword": string - Keyword must start with # and be followed by words separated by #. Keyword must be between 3 and 50 characters. Keyword is a required field.
+            "categoryIds": [1, 2, 3] // Example of category IDs array
+        }
+
+        --boundary_string
+        Content-Disposition: form-data; name="images"; filename="image1.jpg" 
+        Content-Type: image/jpeg 
+
+        (binary data)
+
+        --boundary_string
+        Content-Disposition: form-data; name="images"; filename="image2.jpeg" 
+        Content-Type: image/jpeg 
+
+        (binary data)
+
+        --boundary_string
+        Content-Disposition: form-data; name="images"; filename="image3.png" 
+        Content-Type: image/png 
+
+        (binary data)
+
+        --boundary_string--
 + Response 201 (application/json)
-    + Attributes (a)
+    + Attributes (ResponseDto)
 + Response 400 (application/json)
-    + Attributes (a)
+    + Attributes (MethodArgumentNotValidException)
 + Response 403 (application/json)
-    + Attributes (a)
+    + Attributes (AccessDeniedException)
 + Response 404 (application/json)
-    + Attributes (a)
+    + Attributes (NotFoundException)
 + Response 500 (application/json)
-    + Attributes (a)
-### Edit item [PUT /admin/items]
+    + Attributes (Exception)
+
+### Edit item [PATCH /admin/items/{itemId}]
 - **Required Role**: Admin
-+ Request (application/json)
+- **Exception**: 
+    + Response Code: 400
+        + MethodArgumentNotValidException - Validation failed 
+        + TypeMismatchException - Method argument (path variable or query parameter) cannot be converted to the expected type
+    + Response Code: 403
+        + AccessDeniedException 
+    + Response Code: 404
+        + NotFoundException -  Category or item not found
+    + Response Code: 500
+        + Exception - Internal server error occurred
++ Parameters
+    + itemId - The ID of the item
++ Request (multipart/form-data)
     + Headers 
         X-XSRF-TOKEN: {X-XSRF-TOKEN}
         Authorization: Bearer {BEARER-TOKEN} 
-    + Attributes (a)
+    + Body
+
+
+        --boundary_string
+        Content-Disposition: form-data; name="item"
+        Content-Type: application/json
+        {
+            "name": string - Name must be between 3 and 50 characters. 
+            "price": number - Price must be greater than or equal to 0. 
+            "keyword": string - Keyword must start with # and be followed by words separated by #. Keyword must be between 3 and 50 characters. 
+            "categoryIds": [1, 2, 3] // Example of category IDs array
+
+            // Only include fields that need to be updated
+        }
+
+        --boundary_string
+        Content-Disposition: form-data; name="addImages"; filename="image1.jpg" 
+        Content-Type: image/jpeg 
+
+        (binary data)
+
+        --boundary_string
+        Content-Disposition: form-data; name="addImages"; filename="image2.jpeg" 
+        Content-Type: image/jpeg 
+
+        (binary data)
+
+        --boundary_string
+        Content-Disposition: form-data; name="addImages"; filename="image3.png" 
+        Content-Type: image/png 
+
+        (binary data)
+
+        --boundary_string--
+        Content-Disposition: form-data; name="removeImageIds"
+        Content-Type: application/json
+
+        [4, 5]  // Example IDs of images to be removed
+        --boundary_string--
 + Response 200 (application/json)
-    + Attributes (a)
+    + Attributes (ResponseDto)
 + Response 400 (application/json)
-    + Attributes (a)
+    + MethodArgumentNotValidException 
+    + Attributes (MethodArgumentNotValidException)
++ Response 400 (application/json)
+    + TypeMismatchException
+    + Attributes (TypeMismatchException)
 + Response 403 (application/json)
-    + Attributes (a)
+    + Attributes (AccessDeniedException)
 + Response 404 (application/json)
-    + Attributes (a)
+    + Attributes (NotFoundException)
 + Response 500 (application/json)
-    + Attributes (a)
+    + Attributes (Exception)
+
 ### Mark item as invalid [PATCH /admin/items/{itemId}/invalid]
 - **Required Role**: Admin
+- **Exception**: 
+    + Response Code: 400
+        + TypeMismatchException - Method argument (path variable or query parameter) cannot be converted to the expected type
+    + Response Code: 403
+        + AccessDeniedException 
+    + Response Code: 404
+        + NotFoundException -  The item is not found
+    + Response Code: 500
+        + Exception - Internal server error occurred
 + Parameters
     + itemId - The ID of the item
 + Request (application/json)
     + Headers 
         X-XSRF-TOKEN: {X-XSRF-TOKEN}
         Authorization: Bearer {BEARER-TOKEN} 
-    + Attributes (a)
 + Response 200 (application/json)
-    + Attributes (a)
+    + Attributes (ResponseDto)
 + Response 400 (application/json)
-    + Attributes (a)
+    + Attributes (TypeMismatchException)
 + Response 403 (application/json)
-    + Attributes (a)
+    + Attributes (AccessDeniedException)
 + Response 404 (application/json)
-    + Attributes (a)
+    + Attributes (NotFoundException)
 + Response 500 (application/json)
-    + Attributes (a)
+    + Attributes (Exception)
+
 ### Update stock levels [PATCH /admin/items/{itemId}/stock]
 - **Required Role**: Admin
+- **Exception**: 
+    + Response Code: 400
+        + MethodArgumentNotValidException - Validation failed 
+        + TypeMismatchException - Method argument (path variable or query parameter) cannot be converted to the expected type
+    + Response Code: 403
+        + AccessDeniedException 
+    + Response Code: 404
+        + NotFoundException - The item is not found
+    + Response Code: 500
+        + Exception - Internal server error occurred
 + Parameters
     + itemId - The ID of the item
 + Request (application/json)
     + Headers 
         X-XSRF-TOKEN: {X-XSRF-TOKEN}
         Authorization: Bearer {BEARER-TOKEN} 
-    + Attributes (a)
+    + Attributes (UpdateStockDto)
 + Response 200 (application/json)
-    + Attributes (a)
+    + Attributes (ResponseDto)
 + Response 400 (application/json)
-    + Attributes (a)
+    + MethodArgumentNotValidException 
+    + Attributes (MethodArgumentNotValidException)
++ Response 400 (application/json)
+    + TypeMismatchException
+    + Attributes (TypeMismatchException)
 + Response 403 (application/json)
-    + Attributes (a)
+    + Attributes (AccessDeniedException)
 + Response 404 (application/json)
-    + Attributes (a)
+    + Attributes (NotFoundException)
 + Response 500 (application/json)
-    + Attributes (a)
-### Notify users about stock alerts [POST /admin/items/{itemId}/notify]
+    + Attributes (Exception)
+
+### Notify users about stock alerts [POST /admin/items/{itemId}/notify-stock-alert]
 - **Required Role**: Admin
+- **Exception**: 
+    + Response Code: 400
+        + TypeMismatchException - Method argument (path variable or query parameter) cannot be converted to the expected type
+    + Response Code: 403
+        + AccessDeniedException 
+    + Response Code: 404
+        + NotFoundException - The item is not found
+    + Response Code: 500
+        + Exception - Internal server error occurred
 + Parameters
     + itemId - The ID of the item
 + Request (application/json)
     + Headers 
         X-XSRF-TOKEN: {X-XSRF-TOKEN}
         Authorization: Bearer {BEARER-TOKEN} 
-    + Attributes (a)
 + Response 200 (application/json)
-    + Attributes (a)
+    + Attributes (ResponseDto)
 + Response 400 (application/json)
-    + Attributes (a)
+    + Attributes (TypeMismatchException)
 + Response 403 (application/json)
-    + Attributes (a)
+    + Attributes (AccessDeniedException)
 + Response 404 (application/json)
-    + Attributes (a)
+    + Attributes (NotFoundException)
 + Response 500 (application/json)
-    + Attributes (a)
-### Notify users about cart items [POST /admin/items/{itemId}/notify-cart]
+    + Attributes (Exception)
+
+### Notify users if cart items invalidated [POST /admin/items/{itemId}/notify-cart-item-invalidation]
 - **Required Role**: Admin
+- **Exception**: 
+    + Response Code: 400
+        + TypeMismatchException - Method argument (path variable or query parameter) cannot be converted to the expected type
+    + Response Code: 403
+        + AccessDeniedException 
+    + Response Code: 404
+        + NotFoundException - The item is not found
+    + Response Code: 500
+        + Exception - Internal server error occurred
 + Parameters
     + itemId - The ID of the item
 + Request (application/json)
     + Headers 
         X-XSRF-TOKEN: {X-XSRF-TOKEN}
         Authorization: Bearer {BEARER-TOKEN} 
-    + Attributes (a)
 + Response 200 (application/json)
-    + Attributes (a)
+    + Attributes (ResponseDto)
 + Response 400 (application/json)
-    + Attributes (a)
+    + Attributes (TypeMismatchException)
 + Response 403 (application/json)
-    + Attributes (a)
+    + Attributes (AccessDeniedException)
 + Response 404 (application/json)
-    + Attributes (a)
+    + Attributes (NotFoundException)
 + Response 500 (application/json)
-    + Attributes (a)
+    + Attributes (Exception)
+
 ### Create a new coupon [POST /admin/coupons]
 - **Required Role**: Admin
+- **Exception**: 
+    + Response Code: 400
+        + DuplicateNameException - Duplicate code exists
+        + MethodArgumentNotValidException - Validation failed 
+        + HttpMessageNotReadableException - Request body cannot be read or parsed into the desired object due to malformed JSON or incompatible data types
+    + Response Code: 403
+        + AccessDeniedException 
+    + Response Code: 500
+        + Exception - Internal server error occurred
 + Request (application/json)
     + Headers 
         X-XSRF-TOKEN: {X-XSRF-TOKEN}
         Authorization: Bearer {BEARER-TOKEN} 
-    + Attributes (a)
+    + Attributes (CouponRequestDto)
 + Response 201 (application/json)
-    + Attributes (a)
+    + Attributes (ResponseDto)
 + Response 400 (application/json)
-    + Attributes (a)
+    + DuplicateNameException 
+    + Attributes (DuplicateNameException)
++ Response 400 (application/json)
+    + MethodArgumentNotValidException 
+    + Attributes (MethodArgumentNotValidException)
++ Response 400 (application/json)
+    + HttpMessageNotReadableException
+    + Attributes (HttpMessageNotReadableException)
 + Response 403 (application/json)
-    + Attributes (a)
+    + Attributes (AccessDeniedException)
 + Response 500 (application/json)
-    + Attributes (a)
+    + Attributes (Exception)
 
-### Update an existing coupon [PUT /admin/coupons/{couponId}]
+### Update an existing coupon [PATCH /admin/coupons/{couponId}]
 - **Required Role**: Admin
+- **Exception**: 
+    + Response Code: 400
+        + TypeMismatchException - Method argument (path variable or query parameter) cannot be converted to the expected type
+        + DuplicateNameException - Duplicate code exists
+        + MethodArgumentNotValidException - Validation failed 
+        + HttpMessageNotReadableException - Request body cannot be read or parsed into the desired object due to malformed JSON or incompatible data types
+    + Response Code: 403
+        + AccessDeniedException 
+    + Response Code: 404
+        + NotFoundException - The coupon is not found
+    + Response Code: 500
+        + Exception - Internal server error occurred
 + Parameters
     + couponId - The ID of the coupon
 + Request (application/json)
     + Headers 
         X-XSRF-TOKEN: {X-XSRF-TOKEN}
         Authorization: Bearer {BEARER-TOKEN} 
-    + Attributes (a)
+    + Attributes (PatchCouponRequestDto)
 + Response 200 (application/json)
-    + Attributes (a)
+    + Attributes (ResponseDto)
 + Response 400 (application/json)
-    + Attributes (a)
+    + TypeMismatchException 
+    + Attributes (TypeMismatchException)
++ Response 400 (application/json)
+    + DuplicateNameException 
+    + Attributes (DuplicateNameException)
++ Response 400 (application/json)
+    + MethodArgumentNotValidException 
+    + Attributes (MethodArgumentNotValidException)
++ Response 400 (application/json)
+    + HttpMessageNotReadableException
+    + Attributes (HttpMessageNotReadableException)
 + Response 403 (application/json)
-    + Attributes (a)
+    + Attributes (AccessDeniedException)
 + Response 404 (application/json)
-    + Attributes (a)
+    + Attributes (NotFoundException)
 + Response 500 (application/json)
-    + Attributes (a)
+    + Attributes (Exception)
 
 ### Delete a coupon [DELETE /admin/coupons/{couponId}]
 - **Required Role**: Admin
+- **Exception**: 
+    + Response Code: 400
+        + TypeMismatchException - Method argument (path variable or query parameter) cannot be converted to the expected type
+    + Response Code: 403
+        + AccessDeniedException 
+    + Response Code: 404
+        + NotFoundException -  The coupon is not found
+    + Response Code: 500
+        + Exception - Internal server error occurred
 + Parameters
     + couponId - The ID of the coupon
 + Request 
@@ -407,16 +762,27 @@ HOST: BackendDomain:80/api
         X-XSRF-TOKEN: {X-XSRF-TOKEN}
         Authorization: Bearer {BEARER-TOKEN} 
 + Response 200 (application/json)
-    + Attributes (a)
+    + Attributes (ResponseDto)
++ Response 400 (application/json)
+    + Attributes (TypeMismatchException)
 + Response 403 (application/json)
-    + Attributes (a)
+    + Attributes (AccessDeniedException)
 + Response 404 (application/json)
-    + Attributes (a)
+    + Attributes (NotFoundException)
 + Response 500 (application/json)
-    + Attributes (a)
+    + Attributes (Exception)
 
 ### Assign coupon to a user [POST /admin/coupons/{couponId}/assign/{userId}]
 - **Required Role**: Admin
+- **Exception**: 
+    + Response Code: 400
+        + TypeMismatchException - Method argument (path variable or query parameter) cannot be converted to the expected type
+    + Response Code: 403
+        + AccessDeniedException 
+    + Response Code: 404
+        + NotFoundException -  Coupon or user not found
+    + Response Code: 500
+        + Exception - Internal server error occurred
 + Parameters
     + couponId - The ID of the coupon
     + userId - The ID of the user
@@ -425,16 +791,27 @@ HOST: BackendDomain:80/api
         X-XSRF-TOKEN: {X-XSRF-TOKEN}
         Authorization: Bearer {BEARER-TOKEN} 
 + Response 200 (application/json)
-    + Attributes (a)
+    + Attributes (ResponseDto)
++ Response 400 (application/json)
+    + Attributes (TypeMismatchException)
 + Response 403 (application/json)
-    + Attributes (a)
+    + Attributes (AccessDeniedException)
 + Response 404 (application/json)
-    + Attributes (a)
+    + Attributes (NotFoundException)
 + Response 500 (application/json)
-    + Attributes (a)
+    + Attributes (Exception)
 
 ### Assign coupon to all user [POST /admin/coupons/{couponId}/assign/all] 
 - **Required Role**: Admin
+- **Exception**: 
+    + Response Code: 400
+        + TypeMismatchException - Method argument (path variable or query parameter) cannot be converted to the expected type
+    + Response Code: 403
+        + AccessDeniedException 
+    + Response Code: 404
+        + NotFoundException -  The coupon is not found
+    + Response Code: 500
+        + Exception - Internal server error occurred
 + Parameters 
     + couponId - The ID of the coupon
 + Request 
@@ -442,32 +819,52 @@ HOST: BackendDomain:80/api
         X-XSRF-TOKEN: {X-XSRF-TOKEN}
         Authorization: Bearer {BEARER-TOKEN} 
 + Response 200 (application/json)
-    + Attributes (a)
+    + Attributes (ResponseDto)
++ Response 400 (application/json)
+    + Attributes (TypeMismatchException)
 + Response 403 (application/json)
-    + Attributes (a)
+    + Attributes (AccessDeniedException)
 + Response 404 (application/json)
-    + Attributes (a)
+    + Attributes (NotFoundException)
 + Response 500 (application/json)
-    + Attributes (a)
+    + Attributes (Exception)
 
 #### Retrieve Coupon details [GET /admin/coupons/{couponId}]
 - **Required Role**: Admin
+- **Exception**: 
+    + Response Code: 400
+        + TypeMismatchException - Method argument (path variable or query parameter) cannot be converted to the expected type
+    + Response Code: 403
+        + AccessDeniedException 
+    + Response Code: 404
+        + NotFoundException -  The coupon is not found
+    + Response Code: 500
+        + Exception - Internal server error occurred
 + Parameters
     + couponId - The ID of the coupon
 + Request 
     + Headers 
         Authorization: Bearer {BEARER-TOKEN} 
 + Response 200 (application/json)
-    + Attributes (a)
+    + Attributes (CouponResponseDto)
 + Response 403 (application/json)
-    + Attributes (a)
+    + Attributes (AccessDeniedException)
 + Response 404 (application/json)
-    + Attributes (a)
+    + Attributes (NotFoundException)
 + Response 500 (application/json)
-    + Attributes (a)
+    + Attributes (Exception)
 
-### Retrieve user coupon status [GET /admin/coupons/users/{userId}?page={page}&size={size}]
+### View user coupons [GET /admin/coupons/users/{userId}?page={page}&size={size}]
 - **Required Role**: Admin
+- **Exception**: 
+    + Response Code: 400
+        + TypeMismatchException - Method argument (path variable or query parameter) cannot be converted to the expected type
+    + Response Code: 403
+        + AccessDeniedException 
+    + Response Code: 404
+        + NotFoundException -  The user is not found
+    + Response Code: 500
+        + Exception - Internal server error occurred
 + Parameters
     + userId  - The ID of the user
     + page: `0` (number, optional) - The page number to retrieve, starting from 0
@@ -476,35 +873,52 @@ HOST: BackendDomain:80/api
     + Headers 
         Authorization: Bearer {BEARER-TOKEN} 
 + Response 200 (application/json)
-    + Attributes (a)
+    + Attributes (Pagination)
+        + content (array[UserCouponResponseDto])
 + Response 403 (application/json)
-    + Attributes (a)
+    + Attributes (AccessDeniedException)
 + Response 404 (application/json)
-    + Attributes (a)
+    + Attributes (NotFoundException)
 + Response 500 (application/json)
-    + Attributes (a)
+    + Attributes (Exception)
 
 
 ### Create notice [POST /admin/notices]
 - **Required Role**: Admin
+- **Exception**: 
+    + Response Code: 400
+        + MethodArgumentNotValidException - Validation failed 
+    + Response Code: 403
+        + AccessDeniedException 
+    + Response Code: 500
+        + Exception - Internal server error occurred
 + Request (application/json)
     + Headers 
         X-XSRF-TOKEN: {X-XSRF-TOKEN}
         Authorization: Bearer {BEARER-TOKEN} 
-    + Attributes (a)
+    + Attributes (NoticeRequestDto)
 + Response 201 (application/json)
-    + Attributes (a)
+    + Attributes (ResponseDto)
 + Response 400 (application/json)
-    + Attributes (a)
+    + Attributes (MethodArgumentNotValidException)
 + Response 403 (application/json)
-    + Attributes (a)
+    + Attributes (AccessDeniedException)
 + Response 500 (application/json)
-    + Attributes (a)
+    + Attributes (Exception)
 
 
 ### Post notice to a user [POST /admin/notices/{noticeId}/assign/{userId}]
 - **Required Role**: Admin
-+ Parameters 
+- **Exception**: 
+    + Response Code: 400
+        + TypeMismatchException - Method argument (path variable or query parameter) cannot be converted to the expected type
+    + Response Code: 403
+        + AccessDeniedException 
+    + Response Code: 404
+        + NotFoundException -  Notice or user not found
+    + Response Code: 500
+        + Exception - Internal server error occurred
++ Parameters
     + noticeId - The ID of the notice
     + userId - The ID of the user
 + Request 
@@ -512,18 +926,27 @@ HOST: BackendDomain:80/api
         X-XSRF-TOKEN: {X-XSRF-TOKEN}
         Authorization: Bearer {BEARER-TOKEN} 
 + Response 200 (application/json)
-    + Attributes (a)
+    + Attributes (ResponseDto)
 + Response 400 (application/json)
-    + Attributes (a)
+    + Attributes (TypeMismatchException)
 + Response 403 (application/json)
-    + Attributes (a)
+    + Attributes (AccessDeniedException)
 + Response 404 (application/json)
-    + Attributes (a)
+    + Attributes (NotFoundException)
 + Response 500 (application/json)
-    + Attributes (a)
+    + Attributes (Exception)
 
 ### Post notice to all user [POST /admin/notices/{noticeId}/assign/all]
 - **Required Role**: Admin
+- **Exception**: 
+    + Response Code: 400
+        + TypeMismatchException - Method argument (path variable or query parameter) cannot be converted to the expected type
+    + Response Code: 403
+        + AccessDeniedException 
+    + Response Code: 404
+        + NotFoundException -  The notice is not found
+    + Response Code: 500
+        + Exception - Internal server error occurred
 + Parameters 
     + noticeId - The ID of the notice
 + Request 
@@ -531,38 +954,61 @@ HOST: BackendDomain:80/api
         X-XSRF-TOKEN: {X-XSRF-TOKEN}
         Authorization: Bearer {BEARER-TOKEN} 
 + Response 200 (application/json)
-    + Attributes (a)
+    + Attributes (ResponseDto)
 + Response 400 (application/json)
-    + Attributes (a)
+    + Attributes (TypeMismatchException)
 + Response 403 (application/json)
-    + Attributes (a)
+    + Attributes (AccessDeniedException)
 + Response 404 (application/json)
-    + Attributes (a)
+    + Attributes (NotFoundException)
 + Response 500 (application/json)
-    + Attributes (a)
+    + Attributes (Exception)
 
-### Edit notice [PUT /admin/notices/{noticeId}]
+### Edit notice [PATCH /admin/notices/{noticeId}]
 - **Required Role**: Admin
+- **Exception**: 
+    + Response Code: 400
+        + TypeMismatchException - Method argument (path variable or query parameter) cannot be converted to the expected type
+        + MethodArgumentNotValidException - Validation failed 
+    + Response Code: 403
+        + AccessDeniedException 
+    + Response Code: 404
+        + NotFoundException - The notice is not found
+    + Response Code: 500
+        + Exception - Internal server error occurred
 + Parameters 
     + noticeId - The ID of the notice
 + Request (application/json)
     + Headers 
         X-XSRF-TOKEN: {X-XSRF-TOKEN}
         Authorization: Bearer {BEARER-TOKEN} 
-    + Attributes (a)
+    + Attributes (PatchNoticeRequestDto)
 + Response 200 (application/json)
-    + Attributes (a)
+    + Attributes (ResponseDto)
 + Response 400 (application/json)
-    + Attributes (a)
+    + MethodArgumentNotValidException 
+    + Attributes (MethodArgumentNotValidException)
++ Response 400 (application/json)
+    + TypeMismatchException 
+    + Attributes (TypeMismatchException)
 + Response 403 (application/json)
-    + Attributes (a)
+    + Attributes (AccessDeniedException)
 + Response 404 (application/json)
-    + Attributes (a)
+    + Attributes (NotFoundException)
 + Response 500 (application/json)
-    + Attributes (a)
+    + Attributes (Exception)
 
 ### Delete notice [DELETE /admin/notices/{noticeId}]
 - **Required Role**: Admin
+- **Exception**: 
+    + Response Code: 400
+        + TypeMismatchException - Method argument (path variable or query parameter) cannot be converted to the expected type
+    + Response Code: 403
+        + AccessDeniedException 
+    + Response Code: 404
+        + NotFoundException - The notice is not found
+    + Response Code: 500
+        + Exception - Internal server error occurred
 + Parameters 
     + noticeId - The ID of the notice
 + Request 
@@ -570,114 +1016,62 @@ HOST: BackendDomain:80/api
         X-XSRF-TOKEN: {X-XSRF-TOKEN}
         Authorization: Bearer {BEARER-TOKEN} 
 + Response 200 (application/json)
-    + Attributes (a)
-+ Response 403 (application/json)
-    + Attributes (a)
-+ Response 404 (application/json)
-    + Attributes (a)
-+ Response 500 (application/json)
-    + Attributes (a)
-
-### Delete review [DELETE /admin/reviews/{reviewId}]
-- **Required Role**: Admin
-+ Parameters 
-    + reviewId - The ID of the review
-+ Request 
-    + Headers 
-        X-XSRF-TOKEN: {X-XSRF-TOKEN}
-        Authorization: Bearer {BEARER-TOKEN} 
-+ Response 200 (application/json)
-    + Attributes (a)
-+ Response 403 (application/json)
-    + Attributes (a)
-+ Response 404 (application/json)
-    + Attributes (a)
-+ Response 500 (application/json)
-    + Attributes (a)
-
-
-### Reply to review [POST /admin/reviews/{reviewId}/reply]
-- **Required Role**: Admin
-+ Parameters 
-    + reviewId - The ID of the review
-+ Request (application/json)
-    + Headers 
-        X-XSRF-TOKEN: {X-XSRF-TOKEN}
-        Authorization: Bearer {BEARER-TOKEN} 
-    + Attributes (a)
-+ Response 201 (application/json)
-    + Attributes (a)
+    + Attributes (ResponseDto)
 + Response 400 (application/json)
-    + Attributes (a)
+    + Attributes (TypeMismatchException)
 + Response 403 (application/json)
-    + Attributes (a)
+    + Attributes (AccessDeniedException)
 + Response 404 (application/json)
-    + Attributes (a)
+    + Attributes (NotFoundException)
 + Response 500 (application/json)
-    + Attributes (a)
-
-### Edit reply [PUT /admin/reviews/{reviewId}/reply/{replyId}]
-- **Required Role**: Admin
-+ Parameters 
-    + reviewId - The ID of the review
-    + replyId - The ID of the reply
-+ Request (application/json)
-    + Headers 
-        X-XSRF-TOKEN: {X-XSRF-TOKEN}
-        Authorization: Bearer {BEARER-TOKEN} 
-    + Attributes (a)
-+ Response 200 (application/json)
-    + Attributes (a)
-+ Response 400 (application/json)
-    + Attributes (a)
-+ Response 403 (application/json)
-    + Attributes (a)
-+ Response 404 (application/json)
-    + Attributes (a)
-+ Response 500 (application/json)
-    + Attributes (a)
-
-### Delete reply [DELETE /admin/reviews/{reviewId}/reply/{replyId}]
-- **Required Role**: Admin
-+ Parameters 
-    + reviewId - The ID of the review
-    + replyId - The ID of the reply
-+ Request 
-    + Headers 
-        X-XSRF-TOKEN: {X-XSRF-TOKEN}
-        Authorization: Bearer {BEARER-TOKEN} 
-+ Response 200 (application/json)
-    + Attributes (a)
-+ Response 403 (application/json)
-    + Attributes (a)
-+ Response 404 (application/json)
-    + Attributes (a)
-+ Response 500 (application/json)
-    + Attributes (a)
-
+    + Attributes (Exception)
 
 ### Respond to inquiry [POST /admin/inquiries/{inquiryId}/respond]
 - **Required Role**: Admin
+- **Exception**: 
+    + Response Code: 400
+        + MethodArgumentNotValidException - Validation failed 
+        + TypeMismatchException - Method argument (path variable or query parameter) cannot be converted to the expected type
+    + Response Code: 403
+        + AccessDeniedException 
+    + Response Code: 404
+        + NotFoundException -  Parent inquiry is not found
+    + Response Code: 500
+        + Exception - Internal server error occurred
 + Parameters 
     + inquiryId - The ID of the inquiry
 + Request (application/json)
     + Headers 
         X-XSRF-TOKEN: {X-XSRF-TOKEN}
         Authorization: Bearer {BEARER-TOKEN} 
-    + Attributes (a)
+    + Attributes (ReplyRequestDto)
 + Response 201 (application/json)
-    + Attributes (a)
+    + Attributes (ResponseDto)
 + Response 400 (application/json)
-    + Attributes (a)
+    + TypeMismatchException 
+    + Attributes (TypeMismatchException)
++ Response 400 (application/json)
+    + MethodArgumentNotValidException 
+    + Attributes (MethodArgumentNotValidException)
 + Response 403 (application/json)
-    + Attributes (a)
+    + Attributes (AccessDeniedException)
 + Response 404 (application/json)
-    + Attributes (a)
+    + Attributes (NotFoundException)
 + Response 500 (application/json)
-    + Attributes (a)
+    + Attributes (Exception)
 
-### Edit respond [PUT /admin/inquiries/{inquiryId}/respond/{respondId}]
+### Edit respond [PATCH /admin/inquiries/{inquiryId}/respond/{respondId}]
 - **Required Role**: Admin
+- **Exception**: 
+    + Response Code: 400
+        + TypeMismatchException - Method argument (path variable or query parameter) cannot be converted to the expected type
+        + MethodArgumentNotValidException - Validation failed 
+    + Response Code: 403
+        + AccessDeniedException 
+    + Response Code: 404
+        + NotFoundException - Parent inquiry or reply not found
+    + Response Code: 500
+        + Exception - Internal server error occurred
 + Parameters 
     + inquiryId - The ID of the inquiry
     + respondId - The ID of the respond
@@ -685,20 +1079,35 @@ HOST: BackendDomain:80/api
     + Headers 
         X-XSRF-TOKEN: {X-XSRF-TOKEN}
         Authorization: Bearer {BEARER-TOKEN} 
-    + Attributes (a)
+    + Attributes (PatchReplyRequestDto)
 + Response 200 (application/json)
-    + Attributes (a)
+    + Attributes (ResponseDto)
 + Response 400 (application/json)
-    + Attributes (a)
+    + TypeMismatchException 
+    + Attributes (TypeMismatchException)
++ Response 400 (application/json)
+    + MethodArgumentNotValidException 
+    + Attributes (MethodArgumentNotValidException)
 + Response 403 (application/json)
-    + Attributes (a)
+    + Attributes (AccessDeniedException)
 + Response 404 (application/json)
-    + Attributes (a)
+    + Attributes (NotFoundException)
 + Response 500 (application/json)
-    + Attributes (a)
+    + Attributes (Exception)
 
 ### Delete respond [DELETE /admin/inquiries/{inquiryId}/respond/{respondId}]
 - **Required Role**: Admin
+- **Exception**: 
+    + Response Code: 400
+        + TypeMismatchException - Method argument (path variable or query parameter) cannot be converted to the expected type
+    + Response Code: 403
+        + AccessDeniedException 
+    + Response Code: 404
+        + NotFoundException -  Parent inquiry or reply not found
+    + Response Code: 409
+        + HasRelatedEntitiesException - The reply contains related entities (replies) and cannot be deleted
+    + Response Code: 500
+        + Exception - Internal server error occurred
 + Parameters 
     + inquiryId - The ID of the inquiry
     + respondId - The ID of the respond
@@ -707,37 +1116,53 @@ HOST: BackendDomain:80/api
         X-XSRF-TOKEN: {X-XSRF-TOKEN}
         Authorization: Bearer {BEARER-TOKEN} 
 + Response 200 (application/json)
-    + Attributes (a)
+    + Attributes (ResponseDto)
 + Response 403 (application/json)
-    + Attributes (a)
+    + Attributes (AccessDeniedException)
 + Response 404 (application/json)
-    + Attributes (a)
+    + Attributes (NotFoundException)
++ Response 409 (application/json)
+    + Attributes (HasRelatedEntitiesException)
 + Response 500 (application/json)
-    + Attributes (a)
+    + Attributes (Exception)
 
 ### Update inquiry status [PATCH /admin/inquiries/{inquiryId}]
 - **Required Role**: Admin
+- **Exception**: 
+    + Response Code: 400
+        + TypeMismatchException - Method argument (path variable or query parameter) cannot be converted to the expected type
+    + Response Code: 403
+        + AccessDeniedException 
+    + Response Code: 404
+        + NotFoundException -  The inquiry is not found
+    + Response Code: 500
+        + Exception - Internal server error occurred
 + Parameters 
     + inquiryId - The ID of the inquiry
 + Request (application/json)
     + Headers 
         X-XSRF-TOKEN: {X-XSRF-TOKEN}
         Authorization: Bearer {BEARER-TOKEN} 
-    + Attributes (a)
 + Response 200 (application/json)
-    + Attributes (a)
-+ Response 400 (application/json)
-    + Attributes (a)
+    + Attributes (ResponseDto)
 + Response 403 (application/json)
-    + Attributes (a)
+    + Attributes (AccessDeniedException)
 + Response 404 (application/json)
-    + Attributes (a)
+    + Attributes (NotFoundException)
 + Response 500 (application/json)
-    + Attributes (a)
-
+    + Attributes (Exception)
 
 ### Retrieve user order details [GET /admin/orders/users/{userId}?page={page}&size={size}]
 - **Required Role**: Admin
+- **Exception**: 
+    + Response Code: 400
+        + TypeMismatchException - Method argument (path variable or query parameter) cannot be converted to the expected type
+    + Response Code: 403
+        + AccessDeniedException 
+    + Response Code: 404
+        + NotFoundException -  The user is not found
+    + Response Code: 500
+        + Exception - Internal server error occurred
 + Parameters
     + userId  - The ID of the user
     + page: `0` (number, optional) - The page number to retrieve, starting from 0
@@ -746,13 +1171,16 @@ HOST: BackendDomain:80/api
     + Headers 
         Authorization: Bearer {BEARER-TOKEN} 
 + Response 200 (application/json)
-    + Attributes (a)
+    + Attributes (Pagination)
+        + content (array[OrderDetailsResponseDto])
++ Response 400 (application/json)
+    + Attributes (TypeMismatchException)
 + Response 403 (application/json)
-    + Attributes (a)
+    + Attributes (AccessDeniedException)
 + Response 404 (application/json)
-    + Attributes (a)
+    + Attributes (NotFoundException)
 + Response 500 (application/json)
-    + Attributes (a)
+    + Attributes (Exception)
 
 -------
 
@@ -762,40 +1190,174 @@ HOST: BackendDomain:80/api
 
 ### Get user details [GET /users/{userId}]
 - **Required Role**: User
+- **Exception**: 
+    + Response Code: 400
+        + TypeMismatchException - Method argument (path variable or query parameter) cannot be converted to the expected type
+    + Response Code: 403
+        + AccessDeniedException 
+    + Response Code: 404
+        + NotFoundException -  The user is not found
+    + Response Code: 500
+        + Exception - Internal server error occurred
 + Parameters
     + userId  - The ID of the user
 + Request 
     + Headers 
         Authorization: Bearer {BEARER-TOKEN} 
 + Response 200 (application/json)
-    + Attributes (a)
+    + Attributes (UserSummaryDto)
++ Response 400 (application/json)
+    + Attributes (TypeMismatchException)
 + Response 403 (application/json)
-    + Attributes (a)
+    + Attributes (AccessDeniedException)
 + Response 404 (application/json)
-    + Attributes (a)
+    + Attributes (NotFoundException)
 + Response 500 (application/json)
-    + Attributes (a)
-### Update user details [PUT /users/{userId}]
+    + Attributes (Exception)
+### Update user details [PATCH /users/{userId}]
 - **Required Role**: User
+- **Exception**: 
+    + Response Code: 400
+        + MethodArgumentNotValidException - Validation failed 
+        + TypeMismatchException - Method argument (path variable or query parameter) cannot be converted to the expected type
+    + Response Code: 403
+        + AccessDeniedException 
+    + Response Code: 404
+        + NotFoundException -  The user is not found
+    + Response Code: 500
+        + Exception - Internal server error occurred
 + Parameters
     + userId  - The ID of the user
 + Request (application/json)
     + Headers 
         X-XSRF-TOKEN: {X-XSRF-TOKEN}
         Authorization: Bearer {BEARER-TOKEN} 
-    + Attributes (a)
+    + Attributes (PatchUserDetailsReqeustDto)
 + Response 200 (application/json)
-    + Attributes (a)
+    + Attributes (ResponseDto)
 + Response 400 (application/json)
-    + Attributes (a)
+    + MethodArgumentNotValidException 
+    + Attributes (MethodArgumentNotValidException)
++ Response 400 (application/json)
+    + TypeMismatchException 
+    + Attributes (TypeMismatchException)
 + Response 403 (application/json)
-    + Attributes (a)
+    + Attributes (AccessDeniedException)
 + Response 404 (application/json)
-    + Attributes (a)
+    + Attributes (NotFoundException)
 + Response 500 (application/json)
-    + Attributes (a)
+    + Attributes (Exception)
+
+### Add Delivery address [POST /users/{userId}/deliveryAddresses]
+- **Required Role**: User
+- **Exception**: 
+    + Response Code: 400
+        + MethodArgumentNotValidException - Validation failed 
+        + TypeMismatchException - Method argument (path variable or query parameter) cannot be converted to the expected type
+    + Response Code: 403
+        + AccessDeniedException 
+    + Response Code: 404
+        + NotFoundException -  The user is not found
+    + Response Code: 500
+        + Exception - Internal server error occurred
++ Parameters
+    + userId  - The ID of the user
++ Request (application/json)
+    + Headers 
+        X-XSRF-TOKEN: {X-XSRF-TOKEN}
+        Authorization: Bearer {BEARER-TOKEN} 
+    + Attributes (DeliveryAddressRequestDto)
++ Response 201 (application/json)
+    + Attributes (ResponseDto)
++ Response 400 (application/json)
+    + TypeMismatchException 
+    + Attributes (TypeMismatchException)
++ Response 400 (application/json)
+    + MethodArgumentNotValidException 
+    + Attributes (MethodArgumentNotValidException)
++ Response 403 (application/json)
+    + Attributes (AccessDeniedException)
++ Response 404 (application/json)
+    + Attributes (NotFoundException)
++ Response 500 (application/json)
+    + Attributes (Exception)
+### Edit Delivery address [PUT /users/{userId}/deliveryAddresses/{deliveryAddressId}]
+- **Required Role**: User
+- **Exception**: 
+    + Response Code: 400
+        + MethodArgumentNotValidException - Validation failed 
+        + TypeMismatchException - Method argument (path variable or query parameter) cannot be converted to the expected type
+    + Response Code: 403
+        + AccessDeniedException 
+    + Response Code: 404
+        + NotFoundException -  User or deliveryAddress is not found
+    + Response Code: 500
+        + Exception - Internal server error occurred
++ Parameters
+    + userId  - The ID of the user
+    + deliveryAddressId - The ID of the deliveryAddress
++ Request (application/json)
+    + Headers 
+        X-XSRF-TOKEN: {X-XSRF-TOKEN}
+        Authorization: Bearer {BEARER-TOKEN} 
+    + Attributes (DeliveryAddressRequestDto)
++ Response 200 (application/json)
+    + Attributes (ResponseDto)
++ Response 400 (application/json)
+    + TypeMismatchException 
+    + Attributes (TypeMismatchException)
++ Response 400 (application/json)
+    + MethodArgumentNotValidException 
+    + Attributes (MethodArgumentNotValidException)
++ Response 403 (application/json)
+    + Attributes (AccessDeniedException)
++ Response 404 (application/json)
+    + Attributes (NotFoundException)
++ Response 500 (application/json)
+    + Attributes (Exception)
+### Delete Delivery address [DELETE /users/{userId}/deliveryAddresses/{deliveryAddressId}]
+- **Required Role**: User
+- **Exception**: 
+    + Response Code: 400
+        + TypeMismatchException - Method argument (path variable or query parameter) cannot be converted to the expected type
+    + Response Code: 403
+        + AccessDeniedException 
+    + Response Code: 404
+        + NotFoundException -  User or deliveryAddress is not found
+    + Response Code: 500
+        + Exception - Internal server error occurred
++ Parameters
+    + userId  - The ID of the user
+    + deliveryAddressId - The ID of the deliveryAddress
++ Request 
+    + Headers 
+        X-XSRF-TOKEN: {X-XSRF-TOKEN}
+        Authorization: Bearer {BEARER-TOKEN} 
++ Response 200 (application/json)
+    + Attributes (ResponseDto)
++ Response 400 (application/json)
+    + TypeMismatchException 
+    + Attributes (TypeMismatchException)
++ Response 400 (application/json)
+    + MethodArgumentNotValidException 
+    + Attributes (MethodArgumentNotValidException)
++ Response 403 (application/json)
+    + Attributes (AccessDeniedException)
++ Response 404 (application/json)
+    + Attributes (NotFoundException)
++ Response 500 (application/json)
+    + Attributes (Exception)
 ### View all notices [GET /users/{userId}/notices?page={page}&size={size}]
 - **Required Role**: User
+- **Exception**: 
+    + Response Code: 400
+        + TypeMismatchException - Method argument (path variable or query parameter) cannot be converted to the expected type
+    + Response Code: 403
+        + AccessDeniedException 
+    + Response Code: 404
+        + NotFoundException -  The user is not found
+    + Response Code: 500
+        + Exception - Internal server error occurred
 + Parameters
     + userId  - The ID of the user
     + page: `0` (number, optional) - The page number to retrieve, starting from 0
@@ -804,15 +1366,27 @@ HOST: BackendDomain:80/api
     + Headers 
         Authorization: Bearer {BEARER-TOKEN} 
 + Response 200 (application/json)
-    + Attributes (a)
+    + Attributes (Pagination)
+        + content (array[NoticeResponseDto])
++ Response 400 (application/json)
+    + Attributes (TypeMismatchException)
 + Response 403 (application/json)
-    + Attributes (a)
+    + Attributes (AccessDeniedException)
 + Response 404 (application/json)
-    + Attributes (a)
+    + Attributes (NotFoundException)
 + Response 500 (application/json)
-    + Attributes (a)
+    + Attributes (Exception)
 ### Retrieve notice details [GET /users/{userId}/notices/{noticeId}]
 - **Required Role**: User
+- **Exception**: 
+    + Response Code: 400
+        + TypeMismatchException - Method argument (path variable or query parameter) cannot be converted to the expected type
+    + Response Code: 403
+        + AccessDeniedException 
+    + Response Code: 404
+        + NotFoundException -  User or notice not found
+    + Response Code: 500
+        + Exception - Internal server error occurred
 + Parameters
     + userId  - The ID of the user
     + noticeId  - The ID of the notice
@@ -820,15 +1394,26 @@ HOST: BackendDomain:80/api
     + Headers 
         Authorization: Bearer {BEARER-TOKEN} 
 + Response 200 (application/json)
-    + Attributes (a)
+    + Attributes (NoticeDetailResponseDto)
++ Response 400 (application/json)
+    + Attributes (TypeMismatchException)
 + Response 403 (application/json)
-    + Attributes (a)
+    + Attributes (AccessDeniedException)
 + Response 404 (application/json)
-    + Attributes (a)
+    + Attributes (NotFoundException)
 + Response 500 (application/json)
-    + Attributes (a)
+    + Attributes (Exception)
 ### View coupons [GET /users/{userId}/coupons/?status={status}&page={page}&size={size}]
 - **Required Role**: User
+- **Exception**: 
+    + Response Code: 400
+        + TypeMismatchException - Method argument (path variable or query parameter) cannot be converted to the expected type
+    + Response Code: 403
+        + AccessDeniedException 
+    + Response Code: 404
+        + NotFoundException -  The user is not found
+    + Response Code: 500
+        + Exception - Internal server error occurred
 + Parameters
     + userId  - The ID of the user
     + status: (string, optional) - The status criteria (one of `available`, `invalid`, 'used')
@@ -838,15 +1423,56 @@ HOST: BackendDomain:80/api
     + Headers 
         Authorization: Bearer {BEARER-TOKEN} 
 + Response 200 (application/json)
-    + Attributes (a)
+    + Attributes (Pagination)
+        + content (array[CouponSummaryResponseDto])
++ Response 400 (application/json)
+    + Attributes (TypeMismatchException)
 + Response 403 (application/json)
-    + Attributes (a)
+    + Attributes (AccessDeniedException)
 + Response 404 (application/json)
-    + Attributes (a)
+    + Attributes (NotFoundException)
 + Response 500 (application/json)
-    + Attributes (a)
+    + Attributes (Exception)
+### Retrieve coupon details [GET /users/{userId}/coupons/{couponId}]
+- **Required Role**: User
+- **Exception**: 
+    + Response Code: 400
+        + TypeMismatchException - Method argument (path variable or query parameter) cannot be converted to the expected type
+    + Response Code: 403
+        + AccessDeniedException 
+    + Response Code: 404
+        + NotFoundException -  User or coupon not found
+    + Response Code: 500
+        + Exception - Internal server error occurred
++ Parameters
+    + userId  - The ID of the user
+    + couponId  - The ID of the coupon
++ Request 
+    + Headers 
+        Authorization: Bearer {BEARER-TOKEN} 
++ Response 200 (application/json)
+    + Attributes (CouponDetailResponseDto)
++ Response 400 (application/json)
+    + Attributes (TypeMismatchException)
++ Response 403 (application/json)
+    + Attributes (AccessDeniedException)
++ Response 404 (application/json)
+    + Attributes (NotFoundException)
++ Response 500 (application/json)
+    + Attributes (Exception)
+
 ### Apply coupon [POST /users/{userId}/coupons/{couponId}/apply]
 - **Required Role**: User
+- **Exception**: 
+    + Response Code: 400
+        + TypeMismatchException - Method argument (path variable or query parameter) cannot be converted to the expected type
+        + InvalidOperationException - Expired or has already been used
+    + Response Code: 403
+        + AccessDeniedException 
+    + Response Code: 404
+        + NotFoundException -  User or coupon not found
+    + Response Code: 500
+        + Exception - Internal server error occurred
 + Parameters
     + userId  - The ID of the user
     + couponId  - The ID of the coupon
@@ -855,15 +1481,31 @@ HOST: BackendDomain:80/api
         X-XSRF-TOKEN: {X-XSRF-TOKEN}
         Authorization: Bearer {BEARER-TOKEN} 
 + Response 200 (application/json)
-    + Attributes (a)
+    + Attributes (ResponseDto)
++ Response 400 (application/json)
+    + TypeMismatchException 
+    + Attributes (TypeMismatchException)
++ Response 400 (application/json)
+    + InvalidOperationException 
+    + Attributes (InvalidOperationException)
 + Response 403 (application/json)
-    + Attributes (a)
+    + Attributes (AccessDeniedException)
 + Response 404 (application/json)
-    + Attributes (a)
+    + Attributes (NotFoundException)
 + Response 500 (application/json)
-    + Attributes (a)
+    + Attributes (Exception)
 ### Add items to the cart [POST /users/{userId}/cart/{itemId}]
 - **Required Role**: User
+- **Exception**: 
+    + Response Code: 400
+        + TypeMismatchException - Method argument (path variable or query parameter) cannot be converted to the expected type
+        + InvalidOperationException - The item is invalid for some reasons
+    + Response Code: 403
+        + AccessDeniedException 
+    + Response Code: 404
+        + NotFoundException -  User or item not found
+    + Response Code: 500
+        + Exception - Internal server error occurred
 + Parameters
     + userId  - The ID of the user
     + itemId  - The ID of the item
@@ -872,15 +1514,32 @@ HOST: BackendDomain:80/api
         X-XSRF-TOKEN: {X-XSRF-TOKEN}
         Authorization: Bearer {BEARER-TOKEN} 
 + Response 200 (application/json)
-    + Attributes (a)
+    + Attributes (ResponseDto)
++ Response 400 (application/json)
+    + TypeMismatchException 
+    + Attributes (TypeMismatchException)
++ Response 400 (application/json)
+    + InvalidOperationException 
+    + Attributes (InvalidOperationException)
 + Response 403 (application/json)
-    + Attributes (a)
+    + Attributes (AccessDeniedException)
 + Response 404 (application/json)
-    + Attributes (a)
+    + Attributes (NotFoundException)
 + Response 500 (application/json)
-    + Attributes (a)
+    + Attributes (Exception)
 ### Update item quantities [PATCH /users/{userId}/cart/{itemId}]
 - **Required Role**: User
+- **Exception**: 
+    + Response Code: 400
+        + MethodArgumentNotValidException - Validation failed 
+        + TypeMismatchException - Method argument (path variable or query parameter) cannot be converted to the expected type
+        + InvalidOperationException - Out of stock or item is invalid for some reasons 
+    + Response Code: 403
+        + AccessDeniedException 
+    + Response Code: 404
+        + NotFoundException -  User or item not found
+    + Response Code: 500
+        + Exception - Internal server error occurred
 + Parameters
     + userId  - The ID of the user
     + itemId  - The ID of the item
@@ -888,19 +1547,35 @@ HOST: BackendDomain:80/api
     + Headers 
         X-XSRF-TOKEN: {X-XSRF-TOKEN}
         Authorization: Bearer {BEARER-TOKEN} 
-    + Attributes (a)
+    + Attributes (UpdateQuantityRequestDto)
 + Response 200 (application/json)
-    + Attributes (a)
+    + Attributes (ResponseDto)
 + Response 400 (application/json)
-    + Attributes (a)
+    + MethodArgumentNotValidException 
+    + Attributes (MethodArgumentNotValidException)
++ Response 400 (application/json)
+    + TypeMismatchException 
+    + Attributes (TypeMismatchException)
++ Response 400 (application/json)
+    + InvalidOperationException 
+    + Attributes (InvalidOperationException)
 + Response 403 (application/json)
-    + Attributes (a)
+    + Attributes (AccessDeniedException)
 + Response 404 (application/json)
-    + Attributes (a)
+    + Attributes (NotFoundException)
 + Response 500 (application/json)
-    + Attributes (a)
+    + Attributes (Exception)
 ### Remove items from the Cart [DELETE /users/{userId}/cart/{itemId}]
 - **Required Role**: User
+- **Exception**: 
+    + Response Code: 400
+        + TypeMismatchException - Method argument (path variable or query parameter) cannot be converted to the expected type
+    + Response Code: 403
+        + AccessDeniedException 
+    + Response Code: 404
+        + NotFoundException -  User or item not found
+    + Response Code: 500
+        + Exception - Internal server error occurred
 + Parameters
     + userId  - The ID of the user
     + itemId  - The ID of the item
@@ -909,15 +1584,26 @@ HOST: BackendDomain:80/api
         X-XSRF-TOKEN: {X-XSRF-TOKEN}
         Authorization: Bearer {BEARER-TOKEN} 
 + Response 200 (application/json)
-    + Attributes (a)
+    + Attributes (ResponseDto)
++ Response 400 (application/json)
+    + Attributes (TypeMismatchException)
 + Response 403 (application/json)
-    + Attributes (a)
+    + Attributes (AccessDeniedException)
 + Response 404 (application/json)
-    + Attributes (a)
+    + Attributes (NotFoundException)
 + Response 500 (application/json)
-    + Attributes (a)
+    + Attributes (Exception)
 ### Add items to the wishlist [POST /users/{userId}/wishlist/{itemId}]
 - **Required Role**: User
+- **Exception**: 
+    + Response Code: 400
+        + TypeMismatchException - Method argument (path variable or query parameter) cannot be converted to the expected type
+    + Response Code: 403
+        + AccessDeniedException 
+    + Response Code: 404
+        + NotFoundException -  User or item not found
+    + Response Code: 500
+        + Exception - Internal server error occurred
 + Parameters
     + userId  - The ID of the user
     + itemId  - The ID of the item
@@ -926,15 +1612,26 @@ HOST: BackendDomain:80/api
         X-XSRF-TOKEN: {X-XSRF-TOKEN}
         Authorization: Bearer {BEARER-TOKEN} 
 + Response 200 (application/json)
-    + Attributes (a)
+    + Attributes (ResponseDto)
++ Response 400 (application/json)
+    + Attributes (TypeMismatchException)
 + Response 403 (application/json)
-    + Attributes (a)
+    + Attributes (AccessDeniedException)
 + Response 404 (application/json)
-    + Attributes (a)
+    + Attributes (NotFoundException)
 + Response 500 (application/json)
-    + Attributes (a)
+    + Attributes (Exception)
 ### Remove items from the wishlist [DELETE /users/{userId}/wishlist/{itemId}]
 - **Required Role**: User
+- **Exception**: 
+    + Response Code: 400
+        + TypeMismatchException - Method argument (path variable or query parameter) cannot be converted to the expected type
+    + Response Code: 403
+        + AccessDeniedException 
+    + Response Code: 404
+        + NotFoundException -  User or item not found
+    + Response Code: 500
+        + Exception - Internal server error occurred
 + Parameters
     + userId  - The ID of the user
     + itemId  - The ID of the item
@@ -943,15 +1640,27 @@ HOST: BackendDomain:80/api
         X-XSRF-TOKEN: {X-XSRF-TOKEN}
         Authorization: Bearer {BEARER-TOKEN} 
 + Response 200 (application/json)
-    + Attributes (a)
+    + Attributes (ResponseDto)
++ Response 400 (application/json)
+    + Attributes (TypeMismatchException)
 + Response 403 (application/json)
-    + Attributes (a)
+    + Attributes (AccessDeniedException)
 + Response 404 (application/json)
-    + Attributes (a)
+    + Attributes (NotFoundException)
 + Response 500 (application/json)
-    + Attributes (a)
-### Move items from the wishlist from the cart [POST /users/{userId}/wishlist/{itemId}/move-to-cart]
+    + Attributes (Exception)
+### Move items from the wishlist to the cart [POST /users/{userId}/wishlist/{itemId}/move-to-cart]
 - **Required Role**: User
+- **Exception**: 
+    + Response Code: 400
+        + TypeMismatchException - Method argument (path variable or query parameter) cannot be converted to the expected type
+        + InvalidOperationException - Out of stock or item is invalid for some reasons 
+    + Response Code: 403
+        + AccessDeniedException 
+    + Response Code: 404
+        + NotFoundException -  User or item not found
+    + Response Code: 500
+        + Exception - Internal server error occurred
 + Parameters
     + userId  - The ID of the user
     + itemId  - The ID of the item
@@ -960,55 +1669,166 @@ HOST: BackendDomain:80/api
         X-XSRF-TOKEN: {X-XSRF-TOKEN}
         Authorization: Bearer {BEARER-TOKEN} 
 + Response 200 (application/json)
-    + Attributes (a)
+    + Attributes (ResponseDto)
++ Response 400 (application/json)
+    + TypeMismatchException 
+    + Attributes (TypeMismatchException)
++ Response 400 (application/json)
+    + InvalidOperationException 
+    + Attributes (InvalidOperationException)
 + Response 403 (application/json)
-    + Attributes (a)
+    + Attributes (AccessDeniedException)
 + Response 404 (application/json)
-    + Attributes (a)
+    + Attributes (NotFoundException)
 + Response 500 (application/json)
-    + Attributes (a)
+    + Attributes (Exception)
 ### Submit review for purchased items [POST /users/{userId}/items/{itemId}/reviews]
 - **Required Role**: User
+- **Exception**: 
+    + Response Code: 400
+        + TypeMismatchException - Method argument (path variable or query parameter) cannot be converted to the expected type
+        + InvalidOperationException - The item is invalid for some reasons 
+        + MethodArgumentNotValidException - Validation failed 
+    + Response Code: 403
+        + AccessDeniedException 
+    + Response Code: 404
+        + NotFoundException -  User or item not found
+    + Response Code: 500
+        + Exception - Internal server error occurred
 + Parameters
     + userId  - The ID of the user
     + itemId  - The ID of the item
-+ Request (application/json)
++ Request (multipart/form-data)
     + Headers 
         X-XSRF-TOKEN: {X-XSRF-TOKEN}
         Authorization: Bearer {BEARER-TOKEN} 
-    + Attributes (a)
+    + Body
+
+
+        --boundary_string
+        Content-Disposition: form-data; name="reivew"
+        Content-Type: application/json
+        {
+            "title": string - Title must be between 3 and 100 characters. Title is a required field.
+            "content": string - Content must be between 5 and 500 characters. Content is a required field.
+        }
+
+        --boundary_string
+        Content-Disposition: form-data; name="images"; filename="image1.jpg" 
+        Content-Type: image/jpeg 
+
+        (binary data)
+
+        --boundary_string
+        Content-Disposition: form-data; name="images"; filename="image2.jpeg" 
+        Content-Type: image/jpeg 
+
+        (binary data)
+
+        --boundary_string
+        Content-Disposition: form-data; name="images"; filename="image3.png" 
+        Content-Type: image/png 
+
+        (binary data)
+
+        --boundary_string--
 + Response 201 (application/json)
-    + Attributes (a)
+    + Attributes (ResponseDto)
 + Response 400 (application/json)
-    + Attributes (a)
+    + TypeMismatchException 
+    + Attributes (TypeMismatchException)
++ Response 400 (application/json)
+    + InvalidOperationException 
+    + Attributes (InvalidOperationException)
++ Response 400 (application/json)
+    + MethodArgumentNotValidException 
+    + Attributes (MethodArgumentNotValidException)
 + Response 403 (application/json)
-    + Attributes (a)
+    + Attributes (AccessDeniedException)
 + Response 404 (application/json)
-    + Attributes (a)
+    + Attributes (NotFoundException)
 + Response 500 (application/json)
-    + Attributes (a)
-### Edit review [PUT /users/{userId}/reviews/{reviewId}]
+    + Attributes (Exception)
+### Edit review [PATCH /users/{userId}/reviews/{reviewId}]
 - **Required Role**: User
+- **Exception**: 
+    + Response Code: 400
+        + TypeMismatchException - Method argument (path variable or query parameter) cannot be converted to the expected type
+        + InvalidOperationException - The item is invalid for some reasons 
+        + MethodArgumentNotValidException - Validation failed 
+    + Response Code: 403
+        + AccessDeniedException 
+    + Response Code: 404
+        + NotFoundException -  User or review not found
+    + Response Code: 500
+        + Exception - Internal server error occurred
 + Parameters
     + userId  - The ID of the user
     + reviewId  - The ID of the review
-+ Request (application/json)
++ Request (multipart/form-data)
     + Headers 
         X-XSRF-TOKEN: {X-XSRF-TOKEN}
         Authorization: Bearer {BEARER-TOKEN} 
-    + Attributes (a)
+    + Body
+
+
+        --boundary_string
+        Content-Disposition: form-data; name="reivew"
+        Content-Type: application/json
+        {
+            "title": string - Title must be between 3 and 100 characters. 
+            "content": string - Content must be between 5 and 500 characters. 
+            
+            // Only include fields that need to be updated
+        }
+
+        --boundary_string
+        Content-Disposition: form-data; name="addImages"; filename="image1.jpg" 
+        Content-Type: image/jpeg 
+
+        (binary data)
+
+        --boundary_string
+        Content-Disposition: form-data; name="addImages"; filename="image2.jpeg" 
+        Content-Type: image/jpeg 
+
+        (binary data)
+
+        --boundary_string
+        Content-Disposition: form-data; name="addImages"; filename="image3.png" 
+        Content-Type: image/png 
+
+        (binary data)
+
+        --boundary_string--
 + Response 200 (application/json)
-    + Attributes (a)
+    + Attributes (ResponseDto)
 + Response 400 (application/json)
-    + Attributes (a)
+    + TypeMismatchException 
+    + Attributes (TypeMismatchException)
++ Response 400 (application/json)
+    + InvalidOperationException 
+    + Attributes (InvalidOperationException)
++ Response 400 (application/json)
+    + MethodArgumentNotValidException 
+    + Attributes (MethodArgumentNotValidException)
 + Response 403 (application/json)
-    + Attributes (a)
+    + Attributes (AccessDeniedException)
 + Response 404 (application/json)
-    + Attributes (a)
+    + Attributes (NotFoundException)
 + Response 500 (application/json)
-    + Attributes (a)
+    + Attributes (Exception)
 ### Delete review [DELETE /users/{userId}/reviews/{reviewId}]
 - **Required Role**: User
+- **Exception**: 
+    + Response Code: 400
+        + TypeMismatchException - Method argument (path variable or query parameter) cannot be converted to the expected type
+    + Response Code: 403
+        + AccessDeniedException 
+    + Response Code: 404
+        + NotFoundException -  User or review not found
+    + Response Code: 500
+        + Exception - Internal server error occurred
 + Parameters
     + userId  - The ID of the user
     + reviewId  - The ID of the review
@@ -1017,15 +1837,28 @@ HOST: BackendDomain:80/api
         X-XSRF-TOKEN: {X-XSRF-TOKEN}
         Authorization: Bearer {BEARER-TOKEN} 
 + Response 200 (application/json)
-    + Attributes (a)
+    + Attributes (ResponseDto)
++ Response 400 (application/json)
+    + Attributes (TypeMismatchException)
 + Response 403 (application/json)
-    + Attributes (a)
+    + Attributes (AccessDeniedException)
 + Response 404 (application/json)
-    + Attributes (a)
+    + Attributes (NotFoundException)
 + Response 500 (application/json)
-    + Attributes (a)
+    + Attributes (Exception)
 ### Submit item inquiry [POST /users/{userId}/items/{itemId}/inquiries]
 - **Required Role**: User
+- **Exception**: 
+    + Response Code: 400
+        + TypeMismatchException - Method argument (path variable or query parameter) cannot be converted to the expected type
+        + InvalidOperationException - The item is invalid for some reasons 
+        + MethodArgumentNotValidException - Validation failed 
+    + Response Code: 403
+        + AccessDeniedException 
+    + Response Code: 404
+        + NotFoundException -  User or item not found
+    + Response Code: 500
+        + Exception - Internal server error occurred
 + Parameters
     + userId  - The ID of the user
     + itemId  - The ID of the item
@@ -1033,38 +1866,72 @@ HOST: BackendDomain:80/api
     + Headers 
         X-XSRF-TOKEN: {X-XSRF-TOKEN}
         Authorization: Bearer {BEARER-TOKEN} 
-    + Attributes (a)
+    + Attributes (ReplyRequestDto)
 + Response 201 (application/json)
-    + Attributes (a)
+    + Attributes (ResponseDto)
 + Response 400 (application/json)
-    + Attributes (a)
+    + TypeMismatchException 
+    + Attributes (TypeMismatchException)
++ Response 400 (application/json)
+    + InvalidOperationException 
+    + Attributes (InvalidOperationException)
++ Response 400 (application/json)
+    + MethodArgumentNotValidException 
+    + Attributes (MethodArgumentNotValidException)
 + Response 403 (application/json)
-    + Attributes (a)
+    + Attributes (AccessDeniedException)
 + Response 404 (application/json)
-    + Attributes (a)
+    + Attributes (NotFoundException)
 + Response 500 (application/json)
-    + Attributes (a)
+    + Attributes (Exception)
 ### Submit customer inquiry [POST /users/{userId}/customer/inquiries]
 - **Required Role**: User
+- **Exception**: 
+    + Response Code: 400
+        + TypeMismatchException - Method argument (path variable or query parameter) cannot be converted to the expected type
+        + InvalidOperationException - The item is invalid for some reasons 
+        + MethodArgumentNotValidException - Validation failed 
+    + Response Code: 403
+        + AccessDeniedException 
+    + Response Code: 404
+        + NotFoundException -  The user is not found
+    + Response Code: 500
+        + Exception - Internal server error occurred
 + Parameters
     + userId  - The ID of the user
 + Request (application/json)
     + Headers 
         X-XSRF-TOKEN: {X-XSRF-TOKEN}
         Authorization: Bearer {BEARER-TOKEN} 
-    + Attributes (a)
+    + Attributes (ReplyRequestDto)
 + Response 201 (application/json)
-    + Attributes (a)
+    + Attributes (ResponseDto)
 + Response 400 (application/json)
-    + Attributes (a)
+    + TypeMismatchException 
+    + Attributes (TypeMismatchException)
++ Response 400 (application/json)
+    + InvalidOperationException 
+    + Attributes (InvalidOperationException)
++ Response 400 (application/json)
+    + MethodArgumentNotValidException 
+    + Attributes (MethodArgumentNotValidException)
 + Response 403 (application/json)
-    + Attributes (a)
+    + Attributes (AccessDeniedException)
 + Response 404 (application/json)
-    + Attributes (a)
+    + Attributes (NotFoundException)
 + Response 500 (application/json)
-    + Attributes (a)
-### View submitted inquiries [GET /users/{userId}/inquiry?page={page}&size={size}]
+    + Attributes (Exception)
+### View submitted inquiries [GET /users/{userId}/inquiries?page={page}&size={size}]
 - **Required Role**: User
+- **Exception**: 
+    + Response Code: 400
+        + TypeMismatchException - Method argument (path variable or query parameter) cannot be converted to the expected type
+    + Response Code: 403
+        + AccessDeniedException 
+    + Response Code: 404
+        + NotFoundException -  The user is not found
+    + Response Code: 500
+        + Exception - Internal server error occurred
 + Parameters
     + userId  - The ID of the user
     + page: `0` (number, optional) - The page number to retrieve, starting from 0
@@ -1073,15 +1940,27 @@ HOST: BackendDomain:80/api
     + Headers 
         Authorization: Bearer {BEARER-TOKEN} 
 + Response 200 (application/json)
-    + Attributes (a)
+    + Attributes (Pagination)
+        + content (array[InquriyResponseDto])
 + Response 403 (application/json)
-    + Attributes (a)
+    + Attributes (AccessDeniedException)
 + Response 404 (application/json)
-    + Attributes (a)
+    + Attributes (NotFoundException)
 + Response 500 (application/json)
-    + Attributes (a)
+    + Attributes (Exception)
+
 ### Order items [POST /users/{userId}/orders]
 - **Required Role**: User
+- **Exception**: 
+    + Response Code: 400
+        + TypeMismatchException - Method argument (path variable or query parameter) cannot be converted to the expected type
+        + InvalidOperationException - Out of stock or items are invalid for some reasons 
+    + Response Code: 403
+        + AccessDeniedException 
+    + Response Code: 404
+        + NotFoundException -  The user is not found
+    + Response Code: 500
+        + Exception - Internal server error occurred
 + Parameters
     + userId  - The ID of the user
 + Request 
@@ -1089,15 +1968,30 @@ HOST: BackendDomain:80/api
         X-XSRF-TOKEN: {X-XSRF-TOKEN}
         Authorization: Bearer {BEARER-TOKEN} 
 + Response 200 (application/json)
-    + Attributes (a)
+    + Attributes (ResponseDto)
++ Response 400 (application/json)
+    + TypeMismatchException 
+    + Attributes (TypeMismatchException)
++ Response 400 (application/json)
+    + InvalidOperationException 
+    + Attributes (InvalidOperationException)
 + Response 403 (application/json)
-    + Attributes (a)
+    + Attributes (AccessDeniedException)
 + Response 404 (application/json)
-    + Attributes (a)
+    + Attributes (NotFoundException)
 + Response 500 (application/json)
-    + Attributes (a)
+    + Attributes (Exception)
 ### View order details [GET /users/{userId}/orders?page={page}&size={size}]
 - **Required Role**: User
+- **Exception**: 
+    + Response Code: 400
+        + TypeMismatchException - Method argument (path variable or query parameter) cannot be converted to the expected type
+    + Response Code: 403
+        + AccessDeniedException 
+    + Response Code: 404
+        + NotFoundException -  The user is not found
+    + Response Code: 500
+        + Exception - Internal server error occurred
 + Parameters
     + userId  - The ID of the user
     + page: `0` (number, optional) - The page number to retrieve, starting from 0
@@ -1106,32 +2000,29 @@ HOST: BackendDomain:80/api
     + Headers 
         Authorization: Bearer {BEARER-TOKEN} 
 + Response 200 (application/json)
-    + Attributes (a)
+    + Attributes (Pagination)
+        + content (array[OrderDetailsResponseDto])
++ Response 400 (application/json)
+    + Attributes (TypeMismatchException)
 + Response 403 (application/json)
-    + Attributes (a)
+    + Attributes (AccessDeniedException)
 + Response 404 (application/json)
-    + Attributes (a)
+    + Attributes (NotFoundException)
 + Response 500 (application/json)
-    + Attributes (a)
-### Retrieve order details [GET /users/{userId}/orders/{orderId}]
-- **Required Role**: User
-+ Parameters
-    + userId  - The ID of the user
-    + orderId  - The ID of the order
-+ Request 
-    + Headers 
-        Authorization: Bearer {BEARER-TOKEN} 
-+ Response 200 (application/json)
-    + Attributes (a)
-+ Response 403 (application/json)
-    + Attributes (a)
-+ Response 404 (application/json)
-    + Attributes (a)
-+ Response 500 (application/json)
-    + Attributes (a)
+    + Attributes (Exception)
 
 ### Subscribe to stock alerts for items [POST /users/{userId}/items/{itemId}/subscribe-stock-alerts]
 - **Required Role**: User
+- **Exception**: 
+    + Response Code: 400
+        + TypeMismatchException - Method argument (path variable or query parameter) cannot be converted to the expected type
+        + InvalidOperationException - The item is invalid for some reasons 
+    + Response Code: 403
+        + AccessDeniedException 
+    + Response Code: 404
+        + NotFoundException -  User or item not found
+    + Response Code: 500
+        + Exception - Internal server error occurred
 + Parameters
     + userId  - The ID of the user
     + itemId  - The ID of the item
@@ -1140,19 +2031,33 @@ HOST: BackendDomain:80/api
         X-XSRF-TOKEN: {X-XSRF-TOKEN}
         Authorization: Bearer {BEARER-TOKEN} 
 + Response 200 (application/json)
-    + Attributes (a)
+    + Attributes (ResponseDto)
++ Response 400 (application/json)
+    + TypeMismatchException 
+    + Attributes (TypeMismatchException)
++ Response 400 (application/json)
+    + InvalidOperationException 
+    + Attributes (InvalidOperationException)
 + Response 403 (application/json)
-    + Attributes (a)
+    + Attributes (AccessDeniedException)
 + Response 404 (application/json)
-    + Attributes (a)
+    + Attributes (NotFoundException)
 + Response 500 (application/json)
-    + Attributes (a) 
+    + Attributes (Exception) 
 ------
 ## Group Public
 -------
 
 ### Search items with keywords and filtering with category, min/max price range, average review rating [GET /items/search?keywords={keywords}&category={category}&minPrice={minPrice}&maxPrice={maxPrice}&minRating={minRating}&maxRating={maxRating}&page={page}&size={size}]
 - **Required Role**: Public
+- **Exception**: 
+    + Response Code: 400
+        + MethodArgumentNotValidException - Validation failed 
+        + TypeMismatchException - Method argument (path variable or query parameter) cannot be converted to the expected type
+    + Response Code: 404
+        + NotFoundException - keyword or category not found
+    + Response Code: 500
+        + Exception - Internal server error occurred
 + Parameters 
     + keywords: (optional, array) - The search keywords (e.g., `keywords=clothes&keywords=tshirts`)
     + category: (optional, array) - The category IDs (e.g., `category=1&category=2`)
@@ -1164,24 +2069,49 @@ HOST: BackendDomain:80/api
     + size: `10` (number, optional) - The number of items per page
 + Request 
 + Response 200 (application/json)
-    + Attributes (a)
+    + Attributes (Pagination)
+        + content (array[ItemSummaryResponseDto])
++ Response 400 (application/json)
+    + TypeMismatchException 
+    + Attributes (TypeMismatchException)
++ Response 400 (application/json)
+    + MethodArgumentNotValidException 
+    + Attributes (MethodArgumentNotValidException)
 + Response 404 (application/json)
-    + Attributes (a)
+    + Attributes (NotFoundException)
 + Response 500 (application/json)
-    + Attributes (a)
+    + Attributes (Exception)
 ### Retrieve item details [GET /items/{itemId}]
 - **Required Role**: Public
+- **Exception**: 
+    + Response Code: 400
+        + TypeMismatchException - Method argument (path variable or query parameter) cannot be converted to the expected type
+    + Response Code: 404
+        + NotFoundException - Item is not found
+    + Response Code: 500
+        + Exception - Internal server error occurred
 + Parameters 
     + itemId - The ID of the item
 + Request 
 + Response 200 (application/json)
-    + Attributes (a)
+    + Attributes (ItemDetailResponseDto)
++ Response 400 (application/json)
+    + Attributes (TypeMismatchException)
 + Response 404 (application/json)
-    + Attributes (a)
+    + Attributes (NotFoundException)
 + Response 500 (application/json)
-    + Attributes (a)
+    + Attributes (Exception)
+
 ### View reviews by rating or latest for a specific item [GET /items/{itemId}/reviews?sort={sort}&page={page}&size={size}]
 - **Required Role**: Public
+- **Exception**: 
+    + Response Code: 400
+        + TypeMismatchException - Method argument (path variable or query parameter) cannot be converted to the expected type
+        + MethodArgumentNotValidException - Validation failed 
+    + Response Code: 404
+        + NotFoundException - Item is not found
+    + Response Code: 500
+        + Exception - Internal server error occurred
 + Parameters 
     + itemId - The ID of the item
     + sort (optional) - The sorting criteria (one of `latest`, `oldest`, `rating_high`, `rating_low`)
@@ -1189,14 +2119,24 @@ HOST: BackendDomain:80/api
     + size: `10` (number, optional) - The number of items per page
 + Request 
 + Response 200 (application/json)
-    + Attributes (a)
+    + Attributes (Pagination)
+        + content (array[ItemReviews])
++ Response 400 (application/json)
+    + TypeMismatchException 
+    + Attributes (TypeMismatchException)
++ Response 400 (application/json)
+    + MethodArgumentNotValidException 
+    + Attributes (MethodArgumentNotValidException)
 + Response 404 (application/json)
-    + Attributes (a)
+    + Attributes (NotFoundException)
 + Response 500 (application/json)
-    + Attributes (a)
+    + Attributes (Exception)
 
 ### View inquiries [GET /inquiries?type={type}&status={status}&page={page}&size={size}]
 - **Required Role**: Public
+- **Exception**: 
+    + Response Code: 500
+        + Exception - Internal server error occurred
 + Parameters 
     + type - The type criteria (one of `item`, `customer`)
     + status (optional)  - The status criteria (one of `resolved`, `unresolved`)
@@ -1204,24 +2144,322 @@ HOST: BackendDomain:80/api
     + size: `10` (number, optional) - The number of items per page
 + Request 
 + Response 200 (application/json)
-    + Attributes (a)
-+ Response 404 (application/json)
-    + Attributes (a)
+    + Attributes (Pagination)
+        + content (array[InquriyResponseDto])
 + Response 500 (application/json)
-    + Attributes (a)
+    + Attributes (Exception)
 
 ### View inquiry details [GET /inquiries/{inquiryId}]
 - **Required Role**: Public
+- **Exception**: 
+    + Response Code: 400
+        + TypeMismatchException - Method argument (path variable or query parameter) cannot be converted to the expected type
+    + Response Code: 404
+        + NotFoundException -  The inquiry is not found
+    + Response Code: 500
+        + Exception - Internal server error occurred
 + Parameters 
     + inquiryId - The ID of the inquiry
 + Request 
 + Response 200 (application/json)
-    + Attributes (a)
+    + Attributes (InquiryDetailResponseDto)
++ Response 400 (application/json)
+    + Attributes (TypeMismatchException)
 + Response 404 (application/json)
-    + Attributes (a)
+    + Attributes (NotFoundException)
 + Response 500 (application/json)
-    + Attributes (a)
+    + Attributes (Exception)
 
 # Data Structures
 
 ## a
+
+## ValidationError (object)
++ fieldName: string 
++ validationMsg: string 
+
+## ErrorAttributes (object)
++ apiPath: string - The path where the error occurred.
++ errorCode: number - The HTTP status code.
++ errorMessage: string - The error message.
++ errorTime: string - The time when the error occurred.
+
+
+## MethodArgumentNotValidException (ErrorAttributes)
++ validationErrors (array[ValidationError]) 
+
+
+## DuplicateNameException (ErrorAttributes)
+
+## Exception (ErrorAttributes)
+
+## PasswordMismatchException (ErrorAttributes)
+
+## AccessDeniedException (ErrorAttributes)
+
+## NotFoundException (ErrorAttributes)
+
+## DateTimeParseException (ErrorAttributes)
+
+## BadCredentialsException (ErrorAttributes)
+
+## InvalidTokenException (ErrorAttributes)
+
+## InvalidExpirationDateException (ErrorAttributes)
+
+## TypeMismatchException (ErrorAttributes)
+
+## HttpMessageNotReadableException (ErrorAttributes)
+
+## HasRelatedEntitiesException (ErrorAttributes)
+
+## InvalidOperationException (ErrorAttributes)
+
+## ResponseDto (object)
++ statusCode: number - The HTTP status code.
++ statusMessage: string - The response message. 
+
+## SignUpDto (object)
++ identification: string - 6-10 character string containing both alphabets and numbers Consists only of alphabets and numbers. ID is a required field.
++ password: string - 8-15 character string containing alphabets, numbers, and special characters Special characters allowed `!@#$%^&*`. Password is a required field.
++ confirmPassword: string - Confirm Password is a required field.
++ name: string - Name is a required field.
++ birthDate: date - Birth Date must be in the format `yyyy-mm-dd`. Birth Date is a required field.
++ phoneNumber: string - 11-digit string consisting only of numbers. Phone Number must consist of 11 digits.
+
+## LoginRequestDto (object)
++ identification: string
++ password: string
+
+## LoginResponseDto (object)
++ accessToken: string 
++ refreshToken: string
++ userId: number
+
+## CSRF_Token (object)
++ parameterName: `_csrf`
++ headerName: `X-XSRF-TOKEN`
++ token: string
+
+## RefreshTokenRequest (object)
++ refreshToken: string
+
+## RefreshTokenResponse (object)
++ accessToken: string
+
+## Pagination (object)
++ currentPage: number
++ totalPages: number
++ totalItems: number
+
+## AdminResponseDto (object)
++ id: number
++ identification: string
++ name: string
++ birthDate: date
++ phoneNumber: string 
++ creationTime: timestamp
++ lastModifiedTime: timestamp
+
+## PatchAdminDto (object)
++ name: string - Name must be between 5 and 20 characters. name is a required field.
++ password: string - 8-15 character string containing alphabets, numbers, and special characters Special characters allowed `!@#$%^&*`. 
++ phoneNumber: string - 11-digit string consisting only of numbers. Phone Number must consist of 11 digits.
++ role: string -  USER, ADMIN, SUPER_ADMIN
+
+## UserResponseDto (object)
++ id: number
++ identification: string
++ name: string
++ birthDate: date
++ phoneNumber: string 
++ creationTime: timestamp
++ lastModifiedTime: timestamp
+
+## Address (object)
++ addressId: number
++ zipCode: number
++ address: string
++ addressDetail: string
+
+## UserSummaryDto (object)
++ id: number
++ identification: string
++ name: string
++ birthDate: date
++ phoneNumber: string
++ addresses (array[Address]) 
++ creationTime: timestamp
++ lastModifiedTime: timestamp
+
+## CategoryRequestDto (object)
++ name: string - Name must be between 5 and 20 characters. name is a required field.
+
+## CategoryResponseDto (object)
++ id: number 
++ name: string
+
+## CategoryIds (object)
++ id: number - Category IDs cannot be empty.
+
+## ItemRequestDto (object)
++ name: string - Name must be between 3 and 50 characters. Name is a required field.
++ price: number - Price must be greater than or equal to 0. Price is a required field.
++ stock: number - Stock must be greater than or equal to 0. Stock is a required field.
++ keyword: string - Keyword must start with # and be followed by words separated by #. Keyword must be between 3 and 50 characters. Keyword is a required field.
++ categoryIds (array[CategoryIds])
+
+## UpdateStockDto (object)
++ stock: number - Stock must be greater than or equal to 0. Stock is a required field.
+
+## CouponRequestDto (object)
++ code: string - Code must be between 3 and 20 characters. Code is a required field.
++ discountType: string - Discount type is a required field. one of PERCENTAGE, FIXED
++ discountValue: string - Discount value must be greater than or equal to 0. Discount value is a required field.
++ expirationDate: date - Expiration date must be in the future. Expiration date is a required field.
+
+## PatchCouponRequestDto (object)
++ code: string - Code must be between 3 and 20 characters. 
++ discountType: string - one of PERCENTAGE, FIXED
++ discountValue: string - Discount value must be greater than or equal to 0. 
++ expirationDate: date - Expiration date must be in the future. 
+
+## CouponResponseDto (object)
++ id: number
++ code: string
++ discountType: string
++ discountValue: string
++ expirationDate: date
++ creationTime: timestamp
++ lastModifiedTime: timestamp
+
+## UserCouponResponseDto (object)
++ id: number
++ code: string
++ discountType: string
++ discountValue: string
++ expirationDate: date
++ isValid: boolean
++ isUsed: boolean
++ creationTime: timestamp
++ lastModifiedTime: timestamp
+
+## NoticeRequestDto (object)
++ title: string - Title must be between 3 and 100 characters. Title is a required field.
++ content: string - Content must be between 5 and 500 characters. Content is a required field.
+
+## PatchNoticeRequestDto (object)
++ title: string - Title must be between 3 and 100 characters. 
++ content: string - Content must be between 5 and 500 characters. 
+
+## ReplyRequestDto (object)
++ title: string - Title must be between 3 and 100 characters. Title is a required field.
++ content: string - Content must be between 5 and 500 characters. Content is a required field.
+
+## PatchReplyRequestDto (object)
++ title: string - Title must be between 3 and 100 characters. 
++ content: string - Content must be between 5 and 500 characters. 
+
+## OrderItemResponseDto (object)
++ name: string
++ price: number
++ quantity: number
++ totalPrice: number 
+
+## OrderDetailsResponseDto (object)
++ id : number
++ orderNumber: string
++ orderDate: date
++ orderStatus: string
++ item (array[OrderItemResponseDto])
++ finalAmount: number
++ receiver: string
++ phoneNumber: string
++ zipCode: number
++ address: string
++ addressDetail: string 
++ couponCode: number
++ total_amount: number
++ discount_amount: number 
+
+## PatchUserDetailsReqeustDto (object)
++ name: string
++ birthDate: date
++ phoneNumber: string 
+
+## DeliveryAddressRequestDto (object)
++ name: string - Name must be between 5 and 20 characters. name is a required field.
++ phoneNumber: string - Phone number must be between 10 and 15 characters. Phone number is a required field.
++ zipCode: number - Zip code is a required field.
++ address: string - Address must be between 5 and 200 characters. Address is a required field.
++ addressDetail: Address detail must be between 5 and 200 characters. Address detail is a required field.
+## NoticeResponseDto (object)
++ title: string 
++ registrationDate: date 
+## NoticeDetailResponseDto (object)
++ title: string 
++ content: string 
++ registrationDate: date 
+
+## CouponSummaryResponseDto (object)
++ id: number
++ code: string
++ discountType: string
++ discountValue: string
++ expirationDate: date
+
+
+## CouponDetailResponseDto (object)
++ id: number
++ code: string
++ discountType: string
++ discountValue: string
++ expirationDate: date
++ isValid: boolean
++ isUsed: boolean
+
+## UpdateQuantityRequestDto (object)
++ quantity : number - Quantity must be greater than or equal to 1. Quantity is a required field.
+
+## InquriyResponseDto (object)
++ id: number
++ itemName: string 
++ title: string 
++ isResolved: boolean
+
+## topParent (object)
++ itemName: string 
++ title: string 
++ content: string 
++ isResolved: boolean
+
+## reply (object)
++ title: string
++ content: string 
+
+## InquiryDetailResponseDto (object)
++ topParent (topParent)
++ reply (array[reply])
+
+## ItemSummaryResponseDto (object)
++ name: string
++ price: number
++ averageRating: number
++ image: string - URL of the representative image
+
+## ItemImages (object)
++ url: string 
+
+## ItemReviews (object)
++ title: string
++ username: string
++ registrationDate: date 
++ images (array[ItemImages])
+
+## ItemDetailResponseDto (object)
++ name: string
++ price: number
++ averageRating: number
++ images (array[ItemImages])
++ stock: number
+
