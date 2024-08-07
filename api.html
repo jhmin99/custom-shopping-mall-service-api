@@ -1046,7 +1046,6 @@
 <ul>
 <li>MethodArgumentNotValidException - Validation failed</li>
 <li>TypeMismatchException - Method argument (path variable or query parameter) cannot be converted to the expected type</li>
-<li>HttpMessageNotReadableException - Request body cannot be read or parsed into the desired object due to malformed JSON or incompatible data types</li>
 </ul>
 </li>
 <li>Response Code: 403
@@ -1079,7 +1078,7 @@
   "<span class="hljs-attribute">properties</span>": <span class="hljs-value">{
     "<span class="hljs-attribute">name</span>": <span class="hljs-value">{
       "<span class="hljs-attribute">type</span>": <span class="hljs-value"><span class="hljs-string">"string"</span></span>,
-      "<span class="hljs-attribute">description</span>": <span class="hljs-value"><span class="hljs-string">"Name must be between 5 and 20 characters. name is a required field."</span>
+      "<span class="hljs-attribute">description</span>": <span class="hljs-value"><span class="hljs-string">"Name must be between 5 and 20 characters."</span>
     </span>}</span>,
     "<span class="hljs-attribute">password</span>": <span class="hljs-value">{
       "<span class="hljs-attribute">type</span>": <span class="hljs-value"><span class="hljs-string">"string"</span></span>,
@@ -1149,7 +1148,7 @@
     </span>}
   </span>}
 </span>}</code></pre><div style="height: 1px;"></div></div></div><div class="title"><strong>Response&nbsp;&nbsp;<code>400</code></strong><div class="collapse-button"><span class="close">Hide</span><span class="open">Show</span></div></div><div class="collapse-content"><div class="inner"><div class="description"><ul>
-<li>HttpMessageNotReadableException, TypeMismatchException</li>
+<li>TypeMismatchException</li>
 </ul>
 </div><h5>Headers</h5><pre><code><span class="hljs-attribute">Content-Type</span>: <span class="hljs-string">application/json</span></code></pre><div style="height: 1px;"></div><h5>Body</h5><pre><code>{
   "<span class="hljs-attribute">apiPath</span>": <span class="hljs-value"><span class="hljs-string">"string"</span></span>,
@@ -3498,7 +3497,6 @@ Content-Type: application/json
 <ul>
 <li>DuplicateNameException - Duplicate code exists</li>
 <li>MethodArgumentNotValidException - Validation failed</li>
-<li>HttpMessageNotReadableException - Request body cannot be read or parsed into the desired object due to malformed JSON or incompatible data types</li>
 </ul>
 </li>
 <li>Response Code: 403
@@ -3595,7 +3593,7 @@ Content-Type: application/json
     </span>}
   </span>}
 </span>}</code></pre><div style="height: 1px;"></div></div></div><div class="title"><strong>Response&nbsp;&nbsp;<code>400</code></strong><div class="collapse-button"><span class="close">Hide</span><span class="open">Show</span></div></div><div class="collapse-content"><div class="inner"><div class="description"><ul>
-<li>HttpMessageNotReadableException, DuplicateNameException</li>
+<li>DuplicateNameException</li>
 </ul>
 </div><h5>Headers</h5><pre><code><span class="hljs-attribute">Content-Type</span>: <span class="hljs-string">application/json</span></code></pre><div style="height: 1px;"></div><h5>Body</h5><pre><code>{
   "<span class="hljs-attribute">apiPath</span>": <span class="hljs-value"><span class="hljs-string">"string"</span></span>,
@@ -3687,7 +3685,6 @@ Content-Type: application/json
 <li>TypeMismatchException - Method argument (path variable or query parameter) cannot be converted to the expected type</li>
 <li>DuplicateNameException - Duplicate code exists</li>
 <li>MethodArgumentNotValidException - Validation failed</li>
-<li>HttpMessageNotReadableException - Request body cannot be read or parsed into the desired object due to malformed JSON or incompatible data types</li>
 </ul>
 </li>
 <li>Response Code: 403
@@ -3790,7 +3787,7 @@ Content-Type: application/json
     </span>}
   </span>}
 </span>}</code></pre><div style="height: 1px;"></div></div></div><div class="title"><strong>Response&nbsp;&nbsp;<code>400</code></strong><div class="collapse-button"><span class="close">Hide</span><span class="open">Show</span></div></div><div class="collapse-content"><div class="inner"><div class="description"><ul>
-<li>HttpMessageNotReadableException, DuplicateNameException, TypeMismatchException</li>
+<li>DuplicateNameException, TypeMismatchException</li>
 </ul>
 </div><h5>Headers</h5><pre><code><span class="hljs-attribute">Content-Type</span>: <span class="hljs-string">application/json</span></code></pre><div style="height: 1px;"></div><h5>Body</h5><pre><code>{
   "<span class="hljs-attribute">apiPath</span>": <span class="hljs-value"><span class="hljs-string">"string"</span></span>,
@@ -6551,13 +6548,16 @@ Content-Type: application/json
   "<span class="hljs-attribute">type</span>": <span class="hljs-value"><span class="hljs-string">"object"</span></span>,
   "<span class="hljs-attribute">properties</span>": <span class="hljs-value">{
     "<span class="hljs-attribute">name</span>": <span class="hljs-value">{
-      "<span class="hljs-attribute">type</span>": <span class="hljs-value"><span class="hljs-string">"string"</span>
+      "<span class="hljs-attribute">type</span>": <span class="hljs-value"><span class="hljs-string">"string"</span></span>,
+      "<span class="hljs-attribute">description</span>": <span class="hljs-value"><span class="hljs-string">"Name must be between 5 and 20 characters."</span>
     </span>}</span>,
     "<span class="hljs-attribute">birthDate</span>": <span class="hljs-value">{
-      "<span class="hljs-attribute">type</span>": <span class="hljs-value"><span class="hljs-string">"string"</span>
+      "<span class="hljs-attribute">type</span>": <span class="hljs-value"><span class="hljs-string">"string"</span></span>,
+      "<span class="hljs-attribute">description</span>": <span class="hljs-value"><span class="hljs-string">"Birth Date must be in the format `yyyy-mm-dd`."</span>
     </span>}</span>,
     "<span class="hljs-attribute">phoneNumber</span>": <span class="hljs-value">{
-      "<span class="hljs-attribute">type</span>": <span class="hljs-value"><span class="hljs-string">"string"</span>
+      "<span class="hljs-attribute">type</span>": <span class="hljs-value"><span class="hljs-string">"string"</span></span>,
+      "<span class="hljs-attribute">description</span>": <span class="hljs-value"><span class="hljs-string">"11-digit string consisting only of numbers. Phone Number must consist of 11 digits."</span>
     </span>}
   </span>}
 </span>}</code></pre><div style="height: 1px;"></div></div></div><div class="title"><strong>Response&nbsp;&nbsp;<code>200</code></strong><div class="collapse-button"><span class="close">Hide</span><span class="open">Show</span></div></div><div class="collapse-content"><div class="inner"><h5>Headers</h5><pre><code><span class="hljs-attribute">Content-Type</span>: <span class="hljs-string">application/json</span></code></pre><div style="height: 1px;"></div><h5>Body</h5><pre><code>{

@@ -187,7 +187,6 @@ HOST: BackendDomain:80/api
     + Response Code: 400
         + MethodArgumentNotValidException - Validation failed 
         + TypeMismatchException - Method argument (path variable or query parameter) cannot be converted to the expected type
-        + HttpMessageNotReadableException - Request body cannot be read or parsed into the desired object due to malformed JSON or incompatible data types
     + Response Code: 403
         + AccessDeniedException 
     + Response Code: 404
@@ -207,8 +206,8 @@ HOST: BackendDomain:80/api
     + MethodArgumentNotValidException 
     + Attributes (MethodArgumentNotValidException)
 + Response 400 (application/json)
-    + HttpMessageNotReadableException, TypeMismatchException
-    + Attributes (HttpMessageNotReadableException)
+    + TypeMismatchException
+    + Attributes (TypeMismatchException)
 + Response 403 (application/json)
     + Attributes (AccessDeniedException)
 + Response 404 (application/json)
@@ -673,7 +672,6 @@ HOST: BackendDomain:80/api
     + Response Code: 400
         + DuplicateNameException - Duplicate code exists
         + MethodArgumentNotValidException - Validation failed 
-        + HttpMessageNotReadableException - Request body cannot be read or parsed into the desired object due to malformed JSON or incompatible data types
     + Response Code: 403
         + AccessDeniedException 
     + Response Code: 500
@@ -689,8 +687,8 @@ HOST: BackendDomain:80/api
     + MethodArgumentNotValidException 
     + Attributes (MethodArgumentNotValidException)
 + Response 400 (application/json)
-    + HttpMessageNotReadableException, DuplicateNameException
-    + Attributes (HttpMessageNotReadableException)
+    + DuplicateNameException
+    + Attributes (DuplicateNameException)
 + Response 403 (application/json)
     + Attributes (AccessDeniedException)
 + Response 500 (application/json)
@@ -703,7 +701,6 @@ HOST: BackendDomain:80/api
         + TypeMismatchException - Method argument (path variable or query parameter) cannot be converted to the expected type
         + DuplicateNameException - Duplicate code exists
         + MethodArgumentNotValidException - Validation failed 
-        + HttpMessageNotReadableException - Request body cannot be read or parsed into the desired object due to malformed JSON or incompatible data types
     + Response Code: 403
         + AccessDeniedException 
     + Response Code: 404
@@ -723,8 +720,8 @@ HOST: BackendDomain:80/api
     + MethodArgumentNotValidException 
     + Attributes (MethodArgumentNotValidException)
 + Response 400 (application/json)
-    + HttpMessageNotReadableException, DuplicateNameException, TypeMismatchException
-    + Attributes (HttpMessageNotReadableException)
+    + DuplicateNameException, TypeMismatchException
+    + Attributes (DuplicateNameException)
 + Response 403 (application/json)
     + Attributes (AccessDeniedException)
 + Response 404 (application/json)
@@ -2130,8 +2127,6 @@ HOST: BackendDomain:80/api
 
 # Data Structures
 
-## a
-
 ## ValidationError (object)
 + fieldName: string 
 + validationMsg: string 
@@ -2163,11 +2158,7 @@ HOST: BackendDomain:80/api
 
 ## InvalidTokenException (ErrorAttributes)
 
-## InvalidExpirationDateException (ErrorAttributes)
-
 ## TypeMismatchException (ErrorAttributes)
-
-## HttpMessageNotReadableException (ErrorAttributes)
 
 ## HasRelatedEntitiesException (ErrorAttributes)
 
@@ -2224,7 +2215,7 @@ HOST: BackendDomain:80/api
 + lastModifiedTime: timestamp
 
 ## PatchAdminDto (object)
-+ name: string - Name must be between 5 and 20 characters. name is a required field.
++ name: string - Name must be between 5 and 20 characters. 
 + password: string - 8-15 character string containing alphabets, numbers, and special characters Special characters allowed `!@#$%^&*`. 
 + phoneNumber: string - 11-digit string consisting only of numbers. Phone Number must consist of 11 digits.
 + role: string -  USER, ADMIN, SUPER_ADMIN
@@ -2345,9 +2336,9 @@ HOST: BackendDomain:80/api
 + discount_amount: number 
 
 ## PatchUserDetailsReqeustDto (object)
-+ name: string
-+ birthDate: date
-+ phoneNumber: string 
++ name: string - Name must be between 5 and 20 characters.
++ birthDate: date - Birth Date must be in the format `yyyy-mm-dd`.
++ phoneNumber: string - 11-digit string consisting only of numbers. Phone Number must consist of 11 digits.
 
 ## DeliveryAddressRequestDto (object)
 + name: string - Name must be between 5 and 20 characters. name is a required field.
