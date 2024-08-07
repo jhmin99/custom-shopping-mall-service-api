@@ -207,11 +207,8 @@ HOST: BackendDomain:80/api
     + MethodArgumentNotValidException 
     + Attributes (MethodArgumentNotValidException)
 + Response 400 (application/json)
-    + HttpMessageNotReadableException 
+    + HttpMessageNotReadableException, TypeMismatchException
     + Attributes (HttpMessageNotReadableException)
-+ Response 400 (application/json)
-    + TypeMismatchException
-    + Attributes (TypeMismatchException)
 + Response 403 (application/json)
     + Attributes (AccessDeniedException)
 + Response 404 (application/json)
@@ -689,13 +686,10 @@ HOST: BackendDomain:80/api
 + Response 201 (application/json)
     + Attributes (ResponseDto)
 + Response 400 (application/json)
-    + DuplicateNameException 
-    + Attributes (DuplicateNameException)
-+ Response 400 (application/json)
     + MethodArgumentNotValidException 
     + Attributes (MethodArgumentNotValidException)
 + Response 400 (application/json)
-    + HttpMessageNotReadableException
+    + HttpMessageNotReadableException, DuplicateNameException
     + Attributes (HttpMessageNotReadableException)
 + Response 403 (application/json)
     + Attributes (AccessDeniedException)
@@ -726,16 +720,10 @@ HOST: BackendDomain:80/api
 + Response 200 (application/json)
     + Attributes (ResponseDto)
 + Response 400 (application/json)
-    + TypeMismatchException 
-    + Attributes (TypeMismatchException)
-+ Response 400 (application/json)
-    + DuplicateNameException 
-    + Attributes (DuplicateNameException)
-+ Response 400 (application/json)
     + MethodArgumentNotValidException 
     + Attributes (MethodArgumentNotValidException)
 + Response 400 (application/json)
-    + HttpMessageNotReadableException
+    + HttpMessageNotReadableException, DuplicateNameException, TypeMismatchException
     + Attributes (HttpMessageNotReadableException)
 + Response 403 (application/json)
     + Attributes (AccessDeniedException)
@@ -1483,11 +1471,8 @@ HOST: BackendDomain:80/api
 + Response 200 (application/json)
     + Attributes (ResponseDto)
 + Response 400 (application/json)
-    + TypeMismatchException 
+    + TypeMismatchException, InvalidOperationException 
     + Attributes (TypeMismatchException)
-+ Response 400 (application/json)
-    + InvalidOperationException 
-    + Attributes (InvalidOperationException)
 + Response 403 (application/json)
     + Attributes (AccessDeniedException)
 + Response 404 (application/json)
@@ -1516,11 +1501,8 @@ HOST: BackendDomain:80/api
 + Response 200 (application/json)
     + Attributes (ResponseDto)
 + Response 400 (application/json)
-    + TypeMismatchException 
+    + TypeMismatchException, InvalidOperationException 
     + Attributes (TypeMismatchException)
-+ Response 400 (application/json)
-    + InvalidOperationException 
-    + Attributes (InvalidOperationException)
 + Response 403 (application/json)
     + Attributes (AccessDeniedException)
 + Response 404 (application/json)
@@ -1554,11 +1536,8 @@ HOST: BackendDomain:80/api
     + MethodArgumentNotValidException 
     + Attributes (MethodArgumentNotValidException)
 + Response 400 (application/json)
-    + TypeMismatchException 
+    + TypeMismatchException, InvalidOperationException
     + Attributes (TypeMismatchException)
-+ Response 400 (application/json)
-    + InvalidOperationException 
-    + Attributes (InvalidOperationException)
 + Response 403 (application/json)
     + Attributes (AccessDeniedException)
 + Response 404 (application/json)
@@ -1671,11 +1650,8 @@ HOST: BackendDomain:80/api
 + Response 200 (application/json)
     + Attributes (ResponseDto)
 + Response 400 (application/json)
-    + TypeMismatchException 
+    + TypeMismatchException, InvalidOperationException 
     + Attributes (TypeMismatchException)
-+ Response 400 (application/json)
-    + InvalidOperationException 
-    + Attributes (InvalidOperationException)
 + Response 403 (application/json)
     + Attributes (AccessDeniedException)
 + Response 404 (application/json)
@@ -1735,11 +1711,8 @@ HOST: BackendDomain:80/api
 + Response 201 (application/json)
     + Attributes (ResponseDto)
 + Response 400 (application/json)
-    + TypeMismatchException 
+    + TypeMismatchException, InvalidOperationException 
     + Attributes (TypeMismatchException)
-+ Response 400 (application/json)
-    + InvalidOperationException 
-    + Attributes (InvalidOperationException)
 + Response 400 (application/json)
     + MethodArgumentNotValidException 
     + Attributes (MethodArgumentNotValidException)
@@ -1804,11 +1777,8 @@ HOST: BackendDomain:80/api
 + Response 200 (application/json)
     + Attributes (ResponseDto)
 + Response 400 (application/json)
-    + TypeMismatchException 
+    + TypeMismatchException, InvalidOperationException 
     + Attributes (TypeMismatchException)
-+ Response 400 (application/json)
-    + InvalidOperationException 
-    + Attributes (InvalidOperationException)
 + Response 400 (application/json)
     + MethodArgumentNotValidException 
     + Attributes (MethodArgumentNotValidException)
@@ -1870,11 +1840,8 @@ HOST: BackendDomain:80/api
 + Response 201 (application/json)
     + Attributes (ResponseDto)
 + Response 400 (application/json)
-    + TypeMismatchException 
+    + TypeMismatchException, InvalidOperationException 
     + Attributes (TypeMismatchException)
-+ Response 400 (application/json)
-    + InvalidOperationException 
-    + Attributes (InvalidOperationException)
 + Response 400 (application/json)
     + MethodArgumentNotValidException 
     + Attributes (MethodArgumentNotValidException)
@@ -1907,11 +1874,8 @@ HOST: BackendDomain:80/api
 + Response 201 (application/json)
     + Attributes (ResponseDto)
 + Response 400 (application/json)
-    + TypeMismatchException 
+    + TypeMismatchException, InvalidOperationException 
     + Attributes (TypeMismatchException)
-+ Response 400 (application/json)
-    + InvalidOperationException 
-    + Attributes (InvalidOperationException)
 + Response 400 (application/json)
     + MethodArgumentNotValidException 
     + Attributes (MethodArgumentNotValidException)
@@ -1970,11 +1934,8 @@ HOST: BackendDomain:80/api
 + Response 200 (application/json)
     + Attributes (ResponseDto)
 + Response 400 (application/json)
-    + TypeMismatchException 
+    + TypeMismatchException, InvalidOperationException 
     + Attributes (TypeMismatchException)
-+ Response 400 (application/json)
-    + InvalidOperationException 
-    + Attributes (InvalidOperationException)
 + Response 403 (application/json)
     + Attributes (AccessDeniedException)
 + Response 404 (application/json)
@@ -2033,11 +1994,8 @@ HOST: BackendDomain:80/api
 + Response 200 (application/json)
     + Attributes (ResponseDto)
 + Response 400 (application/json)
-    + TypeMismatchException 
+    + TypeMismatchException, InvalidOperationException 
     + Attributes (TypeMismatchException)
-+ Response 400 (application/json)
-    + InvalidOperationException 
-    + Attributes (InvalidOperationException)
 + Response 403 (application/json)
     + Attributes (AccessDeniedException)
 + Response 404 (application/json)
