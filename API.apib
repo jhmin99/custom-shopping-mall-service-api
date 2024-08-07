@@ -45,7 +45,7 @@ HOST: BackendDomain:80/api
     + Response Code: 500
         + Exception - Internal server error occurred
 + Request (application/json)
-    + Attributes (SignUpDto)
+    + Attributes (IdentificationRequestDto)
 + Response 200 (application/json)
     + Attributes (ResponseDto)
 + Response 400 (application/json)
@@ -2226,6 +2226,10 @@ HOST: BackendDomain:80/api
 + name: string - Name is a required field.
 + birthDate: date - Birth Date must be in the format `yyyy-mm-dd`. Birth Date is a required field.
 + phoneNumber: string - 11-digit string consisting only of numbers. Phone Number must consist of 11 digits.
+
+## IdentificationRequestDto (object)
++ identification: string - 6-10 character string containing both alphabets and numbers Consists only of alphabets and numbers. ID is a required field.
+
 
 ## LoginRequestDto (object)
 + identification: string
