@@ -422,11 +422,13 @@ HOST: BackendDomain:80/api
 - **Exception**: 
     + Response Code: 400
         + MethodArgumentNotValidException - Validation failed 
+        + IllegalArgumentException - Unknown storage type
     + Response Code: 403
         + AccessDeniedException 
     + Response Code: 404
         + NotFoundException -  Item or category not found
     + Response Code: 500
+        + ImageUploadException - Image upload failed
         + Exception - Internal server error occurred
 + Request (multipart/form-data)
     + Headers 
@@ -468,12 +470,17 @@ HOST: BackendDomain:80/api
 + Response 201 (application/json)
     + Attributes (ResponseDto)
 + Response 400 (application/json)
+    + IllegalArgumentException
+    + Attributes (IllegalArgumentException)
++ Response 400 (application/json)
+    + MethodArgumentNotValidException
     + Attributes (MethodArgumentNotValidException)
 + Response 403 (application/json)
     + Attributes (AccessDeniedException)
 + Response 404 (application/json)
     + Attributes (NotFoundException)
 + Response 500 (application/json)
+    + ImageUploadException, Exception
     + Attributes (Exception)
 
 ### Edit item [PATCH /admin/items/{itemId}]
@@ -482,11 +489,13 @@ HOST: BackendDomain:80/api
     + Response Code: 400
         + MethodArgumentNotValidException - Validation failed 
         + TypeMismatchException - Method argument (path variable or query parameter) cannot be converted to the expected type
+        + IllegalArgumentException - Unknown storage type
     + Response Code: 403
         + AccessDeniedException 
     + Response Code: 404
-        + NotFoundException -  Category or item not found
+        + NotFoundException -  Category or item or image not found
     + Response Code: 500
+        + ImageUploadException - Image upload failed
         + Exception - Internal server error occurred
 + Parameters
     + itemId - The ID of the item
@@ -539,7 +548,36 @@ HOST: BackendDomain:80/api
     + MethodArgumentNotValidException 
     + Attributes (MethodArgumentNotValidException)
 + Response 400 (application/json)
-    + TypeMismatchException
+    + TypeMismatchException, IllegalArgumentException
+    + Attributes (TypeMismatchException)
++ Response 403 (application/json)
+    + Attributes (AccessDeniedException)
++ Response 404 (application/json)
+    + Attributes (NotFoundException)
++ Response 500 (application/json)
+    + ImageUploadException, Exception
+    + Attributes (Exception)
+
+### Mark item as invalid [PATCH /admin/items/{itemId}/invalid]
+- **Required Role**: Admin
+- **Exception**: 
+    + Response Code: 400
+        + TypeMismatchException - Method argument (path variable or query parameter) cannot be converted to the expected type
+    + Response Code: 403
+        + AccessDeniedException 
+    + Response Code: 404
+        + NotFoundException -  The item is not found
+    + Response Code: 500
+        + Exception - Internal server error occurred
++ Parameters
+    + itemId - The ID of the item
++ Request (application/json)
+    + Headers 
+        X-XSRF-TOKEN: {X-XSRF-TOKEN}
+        Authorization: Bearer {BEARER-TOKEN} 
++ Response 200 (application/json)
+    + Attributes (ResponseDto)
++ Response 400 (application/json)
     + Attributes (TypeMismatchException)
 + Response 403 (application/json)
     + Attributes (AccessDeniedException)
@@ -548,7 +586,8 @@ HOST: BackendDomain:80/api
 + Response 500 (application/json)
     + Attributes (Exception)
 
-### Mark item as invalid [PATCH /admin/items/{itemId}/invalid]
+
+### validate item [PATCH /admin/items/{itemId}/valid]
 - **Required Role**: Admin
 - **Exception**: 
     + Response Code: 400
@@ -602,62 +641,6 @@ HOST: BackendDomain:80/api
     + Attributes (MethodArgumentNotValidException)
 + Response 400 (application/json)
     + TypeMismatchException
-    + Attributes (TypeMismatchException)
-+ Response 403 (application/json)
-    + Attributes (AccessDeniedException)
-+ Response 404 (application/json)
-    + Attributes (NotFoundException)
-+ Response 500 (application/json)
-    + Attributes (Exception)
-
-### Notify users about stock alerts [POST /admin/items/{itemId}/notify-stock-alert]
-- **Required Role**: Admin
-- **Exception**: 
-    + Response Code: 400
-        + TypeMismatchException - Method argument (path variable or query parameter) cannot be converted to the expected type
-    + Response Code: 403
-        + AccessDeniedException 
-    + Response Code: 404
-        + NotFoundException - The item is not found
-    + Response Code: 500
-        + Exception - Internal server error occurred
-+ Parameters
-    + itemId - The ID of the item
-+ Request (application/json)
-    + Headers 
-        X-XSRF-TOKEN: {X-XSRF-TOKEN}
-        Authorization: Bearer {BEARER-TOKEN} 
-+ Response 200 (application/json)
-    + Attributes (ResponseDto)
-+ Response 400 (application/json)
-    + Attributes (TypeMismatchException)
-+ Response 403 (application/json)
-    + Attributes (AccessDeniedException)
-+ Response 404 (application/json)
-    + Attributes (NotFoundException)
-+ Response 500 (application/json)
-    + Attributes (Exception)
-
-### Notify users if cart items invalidated [POST /admin/items/{itemId}/notify-cart-item-invalidation]
-- **Required Role**: Admin
-- **Exception**: 
-    + Response Code: 400
-        + TypeMismatchException - Method argument (path variable or query parameter) cannot be converted to the expected type
-    + Response Code: 403
-        + AccessDeniedException 
-    + Response Code: 404
-        + NotFoundException - The item is not found
-    + Response Code: 500
-        + Exception - Internal server error occurred
-+ Parameters
-    + itemId - The ID of the item
-+ Request (application/json)
-    + Headers 
-        X-XSRF-TOKEN: {X-XSRF-TOKEN}
-        Authorization: Bearer {BEARER-TOKEN} 
-+ Response 200 (application/json)
-    + Attributes (ResponseDto)
-+ Response 400 (application/json)
     + Attributes (TypeMismatchException)
 + Response 403 (application/json)
     + Attributes (AccessDeniedException)
@@ -1010,6 +993,64 @@ HOST: BackendDomain:80/api
     + Attributes (NotFoundException)
 + Response 500 (application/json)
     + Attributes (Exception)
+
+
+### Notify users about stock alerts [POST /admin/notices/items/{itemId}/notify-stock-alert]
+- **Required Role**: Admin
+- **Exception**: 
+    + Response Code: 400
+        + TypeMismatchException - Method argument (path variable or query parameter) cannot be converted to the expected type
+    + Response Code: 403
+        + AccessDeniedException 
+    + Response Code: 404
+        + NotFoundException - The item is not found
+    + Response Code: 500
+        + Exception - Internal server error occurred
++ Parameters
+    + itemId - The ID of the item
++ Request (application/json)
+    + Headers 
+        X-XSRF-TOKEN: {X-XSRF-TOKEN}
+        Authorization: Bearer {BEARER-TOKEN} 
++ Response 200 (application/json)
+    + Attributes (ResponseDto)
++ Response 400 (application/json)
+    + Attributes (TypeMismatchException)
++ Response 403 (application/json)
+    + Attributes (AccessDeniedException)
++ Response 404 (application/json)
+    + Attributes (NotFoundException)
++ Response 500 (application/json)
+    + Attributes (Exception)
+
+### Notify users if cart items invalidated [POST /admin/notices/items/{itemId}/notify-cart-item-invalidation]
+- **Required Role**: Admin
+- **Exception**: 
+    + Response Code: 400
+        + TypeMismatchException - Method argument (path variable or query parameter) cannot be converted to the expected type
+    + Response Code: 403
+        + AccessDeniedException 
+    + Response Code: 404
+        + NotFoundException - The item is not found
+    + Response Code: 500
+        + Exception - Internal server error occurred
++ Parameters
+    + itemId - The ID of the item
++ Request (application/json)
+    + Headers 
+        X-XSRF-TOKEN: {X-XSRF-TOKEN}
+        Authorization: Bearer {BEARER-TOKEN} 
++ Response 200 (application/json)
+    + Attributes (ResponseDto)
++ Response 400 (application/json)
+    + Attributes (TypeMismatchException)
++ Response 403 (application/json)
+    + Attributes (AccessDeniedException)
++ Response 404 (application/json)
+    + Attributes (NotFoundException)
++ Response 500 (application/json)
+    + Attributes (Exception)
+
 
 ### Respond to inquiry [POST /admin/inquiries/{inquiryId}/respond]
 - **Required Role**: Admin
@@ -2163,6 +2204,9 @@ HOST: BackendDomain:80/api
 ## HasRelatedEntitiesException (ErrorAttributes)
 
 ## InvalidOperationException (ErrorAttributes)
+
+## IllegalArgumentException (ErrorAttributes)
+## ImageUploadException (ErrorAttributes)
 
 ## ResponseDto (object)
 + statusCode: number - The HTTP status code.
