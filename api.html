@@ -1071,7 +1071,7 @@
   "<span class="hljs-attribute">name</span>": <span class="hljs-value"><span class="hljs-string">"string"</span></span>,
   "<span class="hljs-attribute">password</span>": <span class="hljs-value"><span class="hljs-string">"string"</span></span>,
   "<span class="hljs-attribute">phoneNumber</span>": <span class="hljs-value"><span class="hljs-string">"string"</span></span>,
-  "<span class="hljs-attribute">role</span>": <span class="hljs-value"><span class="hljs-string">"string"</span>
+  "<span class="hljs-attribute">role</span>": <span class="hljs-value"><span class="hljs-string">"Roles"</span>
 </span>}</code></pre><div style="height: 1px;"></div><h5>Schema</h5><pre><code>{
   "<span class="hljs-attribute">$schema</span>": <span class="hljs-value"><span class="hljs-string">"http://json-schema.org/draft-04/schema#"</span></span>,
   "<span class="hljs-attribute">type</span>": <span class="hljs-value"><span class="hljs-string">"object"</span></span>,
@@ -1090,7 +1090,7 @@
     </span>}</span>,
     "<span class="hljs-attribute">role</span>": <span class="hljs-value">{
       "<span class="hljs-attribute">type</span>": <span class="hljs-value"><span class="hljs-string">"string"</span></span>,
-      "<span class="hljs-attribute">description</span>": <span class="hljs-value"><span class="hljs-string">"USER, ADMIN, SUPER_ADMIN"</span>
+      "<span class="hljs-attribute">description</span>": <span class="hljs-value"><span class="hljs-string">"Role must be one of the following: `USER`, `ADMIN`, `SUPER_ADMIN`"</span>
     </span>}
   </span>}
 </span>}</code></pre><div style="height: 1px;"></div></div></div><div class="title"><strong>Response&nbsp;&nbsp;<code>200</code></strong><div class="collapse-button"><span class="close">Hide</span><span class="open">Show</span></div></div><div class="collapse-content"><div class="inner"><h5>Headers</h5><pre><code><span class="hljs-attribute">Content-Type</span>: <span class="hljs-string">application/json</span></code></pre><div style="height: 1px;"></div><h5>Body</h5><pre><code>{
@@ -3403,7 +3403,7 @@ Content-Type: application/json
 </li>
 </ul>
 <h4>Example URI</h4><div class="definition"><span class="method post">POST</span>&nbsp;<span class="uri"><span class="hostname">BackendDomain:80/api</span>/admin/coupons</span></div><div class="title"><strong>Request</strong><div class="collapse-button"><span class="close">Hide</span><span class="open">Show</span></div></div><div class="collapse-content"><div class="inner"><h5>Headers</h5><pre><code><span class="hljs-attribute">Content-Type</span>: <span class="hljs-string">application/json</span><br><span class="hljs-attribute">X-XSRF-TOKEN</span>: <span class="hljs-string">{X-XSRF-TOKEN}</span><br><span class="hljs-attribute">Authorization</span>: <span class="hljs-string">Bearer {BEARER-TOKEN}</span></code></pre><div style="height: 1px;"></div><h5>Body</h5><pre><code>{
-  "<span class="hljs-attribute">discountType</span>": <span class="hljs-value"><span class="hljs-string">"string"</span></span>,
+  "<span class="hljs-attribute">discountType</span>": <span class="hljs-value"><span class="hljs-string">"DiscountType"</span></span>,
   "<span class="hljs-attribute">discountValue</span>": <span class="hljs-value"><span class="hljs-string">"number"</span></span>,
   "<span class="hljs-attribute">expirationDate</span>": <span class="hljs-value"><span class="hljs-string">"date"</span>
 </span>}</code></pre><div style="height: 1px;"></div><h5>Schema</h5><pre><code>{
@@ -3412,7 +3412,7 @@ Content-Type: application/json
   "<span class="hljs-attribute">properties</span>": <span class="hljs-value">{
     "<span class="hljs-attribute">discountType</span>": <span class="hljs-value">{
       "<span class="hljs-attribute">type</span>": <span class="hljs-value"><span class="hljs-string">"string"</span></span>,
-      "<span class="hljs-attribute">description</span>": <span class="hljs-value"><span class="hljs-string">"Discount type is a required field. one of PERCENTAGE, FIXED"</span>
+      "<span class="hljs-attribute">description</span>": <span class="hljs-value"><span class="hljs-string">"DiscountType must be one of PERCENTAGE, FIXED. DiscountType is a required field."</span>
     </span>}</span>,
     "<span class="hljs-attribute">discountValue</span>": <span class="hljs-value">{
       "<span class="hljs-attribute">type</span>": <span class="hljs-value"><span class="hljs-string">"string"</span></span>,
@@ -3562,7 +3562,7 @@ Content-Type: application/json
 </ul>
 <h4>Example URI</h4><div class="definition"><span class="method patch">PATCH</span>&nbsp;<span class="uri"><span class="hostname">BackendDomain:80/api</span>/admin/coupons/<span class="hljs-attribute" title="couponId">couponId</span></span></div><div class="title"><strong>URI Parameters</strong><div class="collapse-button show"><span class="close">Hide</span><span class="open">Show</span></div></div><div class="collapse-content"><dl class="inner"><dt>couponId</dt><dd><code>string</code>&nbsp;<span class="required">(required)</span>&nbsp;<p>The ID of the coupon</p>
 </dd></dl></div><div class="title"><strong>Request</strong><div class="collapse-button"><span class="close">Hide</span><span class="open">Show</span></div></div><div class="collapse-content"><div class="inner"><h5>Headers</h5><pre><code><span class="hljs-attribute">Content-Type</span>: <span class="hljs-string">application/json</span><br><span class="hljs-attribute">X-XSRF-TOKEN</span>: <span class="hljs-string">{X-XSRF-TOKEN}</span><br><span class="hljs-attribute">Authorization</span>: <span class="hljs-string">Bearer {BEARER-TOKEN}</span></code></pre><div style="height: 1px;"></div><h5>Body</h5><pre><code>{
-  "<span class="hljs-attribute">discountType</span>": <span class="hljs-value"><span class="hljs-string">"string"</span></span>,
+  "<span class="hljs-attribute">discountType</span>": <span class="hljs-value"><span class="hljs-string">"DiscountType"</span></span>,
   "<span class="hljs-attribute">discountValue</span>": <span class="hljs-value"><span class="hljs-string">"number"</span></span>,
   "<span class="hljs-attribute">expirationDate</span>": <span class="hljs-value"><span class="hljs-string">"date"</span>
 </span>}</code></pre><div style="height: 1px;"></div><h5>Schema</h5><pre><code>{
@@ -3571,7 +3571,7 @@ Content-Type: application/json
   "<span class="hljs-attribute">properties</span>": <span class="hljs-value">{
     "<span class="hljs-attribute">discountType</span>": <span class="hljs-value">{
       "<span class="hljs-attribute">type</span>": <span class="hljs-value"><span class="hljs-string">"string"</span></span>,
-      "<span class="hljs-attribute">description</span>": <span class="hljs-value"><span class="hljs-string">"one of PERCENTAGE, FIXED"</span>
+      "<span class="hljs-attribute">description</span>": <span class="hljs-value"><span class="hljs-string">"DiscountType must be one of PERCENTAGE, FIXED"</span>
     </span>}</span>,
     "<span class="hljs-attribute">discountValue</span>": <span class="hljs-value">{
       "<span class="hljs-attribute">type</span>": <span class="hljs-value"><span class="hljs-string">"string"</span></span>,
