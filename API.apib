@@ -806,6 +806,9 @@ HOST: BackendDomain:80/api
         + AccessDeniedException 
     + Response Code: 500
         + Exception - Internal server error occurred
++ Parameters
+    + page: `0` (number, optional) - The page number to retrieve, starting from 0
+    + size: `10` (number, optional) - The number of items per page
 + Request 
     + Headers 
         Authorization: Bearer {BEARER-TOKEN} 
