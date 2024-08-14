@@ -797,7 +797,7 @@ HOST: BackendDomain:80/api
 + Response 500 (application/json)
     + Attributes (Exception)
 
-#### Retrieve all coupons [GET /admin/coupons?page={page}&size={size}]
+#### View all coupons [GET /admin/coupons?page={page}&size={size}]
 - **Required Role**: Admin
 - **Exception**: 
     + Response Code: 400
@@ -2323,6 +2323,7 @@ HOST: BackendDomain:80/api
 + expirationDate: date - Expiration date must be in the future. 
 
 ## CouponResponseDto (object)
++ id: number
 + code: string
 + discountType: string
 + discountValue: number
