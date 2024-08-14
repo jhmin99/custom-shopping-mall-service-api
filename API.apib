@@ -653,7 +653,6 @@ HOST: BackendDomain:80/api
 - **Required Role**: Admin
 - **Exception**: 
     + Response Code: 400
-        + DuplicateNameException - Duplicate code exists
         + MethodArgumentNotValidException - Validation failed 
     + Response Code: 403
         + AccessDeniedException 
@@ -669,9 +668,6 @@ HOST: BackendDomain:80/api
 + Response 400 (application/json)
     + MethodArgumentNotValidException 
     + Attributes (MethodArgumentNotValidException)
-+ Response 400 (application/json)
-    + DuplicateNameException
-    + Attributes (DuplicateNameException)
 + Response 403 (application/json)
     + Attributes (AccessDeniedException)
 + Response 500 (application/json)
@@ -682,7 +678,6 @@ HOST: BackendDomain:80/api
 - **Exception**: 
     + Response Code: 400
         + TypeMismatchException - Method argument (path variable or query parameter) cannot be converted to the expected type
-        + DuplicateNameException - Duplicate code exists
         + MethodArgumentNotValidException - Validation failed 
     + Response Code: 403
         + AccessDeniedException 
@@ -703,7 +698,7 @@ HOST: BackendDomain:80/api
     + MethodArgumentNotValidException 
     + Attributes (MethodArgumentNotValidException)
 + Response 400 (application/json)
-    + DuplicateNameException, TypeMismatchException
+    + TypeMismatchException
     + Attributes (DuplicateNameException)
 + Response 403 (application/json)
     + Attributes (AccessDeniedException)
@@ -1761,6 +1756,7 @@ HOST: BackendDomain:80/api
     + Attributes (NotFoundException)
 + Response 500 (application/json)
     + Attributes (Exception)
+
 ### Edit review [PATCH /users/{userId}/reviews/{reviewId}]
 - **Required Role**: User
 - **Exception**: 
@@ -2311,13 +2307,11 @@ HOST: BackendDomain:80/api
 + stock: number - Stock must be greater than or equal to 0. Stock is a required field.
 
 ## CouponRequestDto (object)
-+ code: string - Code must be between 3 and 20 characters. Code is a required field.
 + discountType: string - Discount type is a required field. one of PERCENTAGE, FIXED
 + discountValue: number - Discount value must be greater than or equal to 0. Discount value is a required field.
 + expirationDate: date - Expiration date must be in the future. Expiration date is a required field.
 
 ## PatchCouponRequestDto (object)
-+ code: string - Code must be between 3 and 20 characters. 
 + discountType: string - one of PERCENTAGE, FIXED
 + discountValue: number - Discount value must be greater than or equal to 0. 
 + expirationDate: date - Expiration date must be in the future. 
