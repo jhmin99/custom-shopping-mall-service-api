@@ -797,30 +797,28 @@ HOST: BackendDomain:80/api
 + Response 500 (application/json)
     + Attributes (Exception)
 
-#### Retrieve Coupon details [GET /admin/coupons/{couponId}]
+#### Retrieve all coupons [GET /admin/coupons?page={page}&size={size}]
 - **Required Role**: Admin
 - **Exception**: 
     + Response Code: 400
         + TypeMismatchException - Method argument (path variable or query parameter) cannot be converted to the expected type
     + Response Code: 403
         + AccessDeniedException 
-    + Response Code: 404
-        + NotFoundException -  The coupon is not found
     + Response Code: 500
         + Exception - Internal server error occurred
-+ Parameters
-    + couponId - The ID of the coupon
 + Request 
     + Headers 
         Authorization: Bearer {BEARER-TOKEN} 
 + Response 200 (application/json)
-    + Attributes (CouponResponseDto)
+    + Attributes (Pagination)
+        + content (array[UserCouponResponseDto])
 + Response 403 (application/json)
     + Attributes (AccessDeniedException)
 + Response 404 (application/json)
     + Attributes (NotFoundException)
 + Response 500 (application/json)
     + Attributes (Exception)
+
 
 ### View user coupons [GET /admin/coupons/users/{userId}?page={page}&size={size}]
 - **Required Role**: Admin
@@ -2322,7 +2320,6 @@ HOST: BackendDomain:80/api
 + expirationDate: date - Expiration date must be in the future. 
 
 ## CouponResponseDto (object)
-+ id: number
 + code: string
 + discountType: string
 + discountValue: number
