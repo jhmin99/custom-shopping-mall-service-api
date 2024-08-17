@@ -1048,7 +1048,61 @@ HOST: BackendDomain:80/api
     + Attributes (Exception)
 
 
-### Respond to inquiry [POST /admin/inquiries/{inquiryId}/respond]
+
+### View inquiries [GET /admin/inquiries?type={type}&status={status}&page={page}&size={size}]
+- **Required Role**: Admin
+- **Exception**: 
+    + Response Code: 403
+        + AccessDeniedException 
+    + Response Code: 500
+        + Exception - Internal server error occurred
++ Parameters 
+    + type - The type criteria (one of `item`, `customer`)
+    + status (optional) - The status criteria (one of `resolved`, `unresolved`)
+    + page: `0` (number, optional) - The page number to retrieve, starting from 0
+    + size: `10` (number, optional) - The number of items per page
++ Request 
+    + Headers 
+        Authorization: Bearer {BEARER-TOKEN} 
++ Response 200 (application/json)
+    + Attributes (Pagination)
+        + content (array[InquiryResponseDto])
++ Response 403 (application/json)
+    + Attributes (AccessDeniedException)
++ Response 500 (application/json)
+    + Attributes (Exception)
+
+
+### Retrieve inquiry details [GET /admin/inquiries/{inquiryId}]
+- **Required Role**: Admin
+- **Exception**: 
+    + Response Code: 400
+        + TypeMismatchException - Method argument (path variable or query parameter) cannot be converted to the expected type
+    + Response Code: 403
+        + AccessDeniedException 
+    + Response Code: 404
+        + NotFoundException -  The inquiry is not found
+    + Response Code: 500
+        + Exception - Internal server error occurred
++ Parameters 
+    + inquiryId - The ID of the inquiry
++ Request 
+    + Headers 
+        Authorization: Bearer {BEARER-TOKEN} 
++ Response 200 (application/json)
+    + Attributes (InquiryDetailResponseDto)
++ Response 400 (application/json)
+    + Attributes (TypeMismatchException)
++ Response 403 (application/json)
+    + Attributes (AccessDeniedException)
++ Response 404 (application/json)
+    + Attributes (NotFoundException)
++ Response 500 (application/json)
+    + Attributes (Exception)
+
+
+
+### Respond to inquiry [POST /admin/inquiries/{inquiryId}/responds]
 - **Required Role**: Admin
 - **Exception**: 
     + Response Code: 400
@@ -1057,7 +1111,7 @@ HOST: BackendDomain:80/api
     + Response Code: 403
         + AccessDeniedException 
     + Response Code: 404
-        + NotFoundException -  Parent inquiry is not found
+        + NotFoundException - The inquiry is not found
     + Response Code: 500
         + Exception - Internal server error occurred
 + Parameters 
@@ -1082,7 +1136,7 @@ HOST: BackendDomain:80/api
 + Response 500 (application/json)
     + Attributes (Exception)
 
-### Edit respond [PATCH /admin/inquiries/{inquiryId}/respond/{respondId}]
+### Edit response [PATCH /admin/inquiries/{inquiryId}/responses/{responseId}]
 - **Required Role**: Admin
 - **Exception**: 
     + Response Code: 400
@@ -1091,12 +1145,14 @@ HOST: BackendDomain:80/api
     + Response Code: 403
         + AccessDeniedException 
     + Response Code: 404
-        + NotFoundException - Parent inquiry or reply not found
+        + NotFoundException - Inquiry or response not found
+    + Response Code: 409
+        + HasRelatedEntitiesException - The respond contains related entities (responses) and cannot be edited
     + Response Code: 500
         + Exception - Internal server error occurred
 + Parameters 
     + inquiryId - The ID of the inquiry
-    + respondId - The ID of the respond
+    + responseId - The ID of the response
 + Request (application/json)
     + Headers 
         X-XSRF-TOKEN: {X-XSRF-TOKEN}
@@ -1114,10 +1170,12 @@ HOST: BackendDomain:80/api
     + Attributes (AccessDeniedException)
 + Response 404 (application/json)
     + Attributes (NotFoundException)
++ Response 409 (application/json)
+    + Attributes (HasRelatedEntitiesException)
 + Response 500 (application/json)
     + Attributes (Exception)
 
-### Delete respond [DELETE /admin/inquiries/{inquiryId}/respond/{respondId}]
+### Delete response [DELETE /admin/inquiries/{inquiryId}/responses/{responseId}]
 - **Required Role**: Admin
 - **Exception**: 
     + Response Code: 400
@@ -1125,14 +1183,14 @@ HOST: BackendDomain:80/api
     + Response Code: 403
         + AccessDeniedException 
     + Response Code: 404
-        + NotFoundException -  Parent inquiry or reply not found
+        + NotFoundException - Inquiry or response not found
     + Response Code: 409
-        + HasRelatedEntitiesException - The reply contains related entities (replies) and cannot be deleted
+        + HasRelatedEntitiesException - The response contains related entities (responses) and cannot be deleted
     + Response Code: 500
         + Exception - Internal server error occurred
 + Parameters 
     + inquiryId - The ID of the inquiry
-    + respondId - The ID of the respond
+    + responseId - The ID of the response
 + Request
     + Headers 
         X-XSRF-TOKEN: {X-XSRF-TOKEN}
@@ -1148,25 +1206,34 @@ HOST: BackendDomain:80/api
 + Response 500 (application/json)
     + Attributes (Exception)
 
-### Update inquiry status [PATCH /admin/inquiries/{inquiryId}]
+### Respond to parent Response [POST /admin/inquiries/{inquiries}/responses/{responseId}]
 - **Required Role**: Admin
 - **Exception**: 
     + Response Code: 400
+        + MethodArgumentNotValidException - Validation failed 
         + TypeMismatchException - Method argument (path variable or query parameter) cannot be converted to the expected type
     + Response Code: 403
         + AccessDeniedException 
     + Response Code: 404
-        + NotFoundException -  The inquiry is not found
+        + NotFoundException - Inquiry or respond not found
     + Response Code: 500
         + Exception - Internal server error occurred
 + Parameters 
     + inquiryId - The ID of the inquiry
+    + responseId - The ID of the parent response
 + Request (application/json)
     + Headers 
         X-XSRF-TOKEN: {X-XSRF-TOKEN}
         Authorization: Bearer {BEARER-TOKEN} 
-+ Response 200 (application/json)
+    + Attributes (ReplyRequestDto)
++ Response 201 (application/json)
     + Attributes (ResponseDto)
++ Response 400 (application/json)
+    + TypeMismatchException 
+    + Attributes (TypeMismatchException)
++ Response 400 (application/json)
+    + MethodArgumentNotValidException 
+    + Attributes (MethodArgumentNotValidException)
 + Response 403 (application/json)
     + Attributes (AccessDeniedException)
 + Response 404 (application/json)
@@ -1513,6 +1580,7 @@ HOST: BackendDomain:80/api
     + Attributes (NotFoundException)
 + Response 500 (application/json)
     + Attributes (Exception)
+
 ### Add items to the cart [POST /users/{userId}/cart/{itemId}]
 - **Required Role**: User
 - **Exception**: 
@@ -1543,6 +1611,7 @@ HOST: BackendDomain:80/api
     + Attributes (NotFoundException)
 + Response 500 (application/json)
     + Attributes (Exception)
+
 ### Update item quantities [PATCH /users/{userId}/cart/{itemId}]
 - **Required Role**: User
 - **Exception**: 
@@ -1578,6 +1647,7 @@ HOST: BackendDomain:80/api
     + Attributes (NotFoundException)
 + Response 500 (application/json)
     + Attributes (Exception)
+
 ### Remove items from the Cart [DELETE /users/{userId}/cart/{itemId}]
 - **Required Role**: User
 - **Exception**: 
@@ -1606,6 +1676,7 @@ HOST: BackendDomain:80/api
     + Attributes (NotFoundException)
 + Response 500 (application/json)
     + Attributes (Exception)
+
 ### Add items to the wishlist [POST /users/{userId}/wishlist/{itemId}]
 - **Required Role**: User
 - **Exception**: 
@@ -1634,6 +1705,7 @@ HOST: BackendDomain:80/api
     + Attributes (NotFoundException)
 + Response 500 (application/json)
     + Attributes (Exception)
+
 ### Remove items from the wishlist [DELETE /users/{userId}/wishlist/{itemId}]
 - **Required Role**: User
 - **Exception**: 
@@ -1662,6 +1734,7 @@ HOST: BackendDomain:80/api
     + Attributes (NotFoundException)
 + Response 500 (application/json)
     + Attributes (Exception)
+
 ### Move items from the wishlist to the cart [POST /users/{userId}/wishlist/{itemId}/move-to-cart]
 - **Required Role**: User
 - **Exception**: 
@@ -1692,6 +1765,7 @@ HOST: BackendDomain:80/api
     + Attributes (NotFoundException)
 + Response 500 (application/json)
     + Attributes (Exception)
+    
 ### Submit review for purchased items [POST /users/{userId}/items/{itemId}/reviews]
 - **Required Role**: User
 - **Exception**: 
@@ -1823,6 +1897,7 @@ HOST: BackendDomain:80/api
     + Attributes (NotFoundException)
 + Response 500 (application/json)
     + Attributes (Exception)
+
 ### Delete review [DELETE /users/{userId}/reviews/{reviewId}]
 - **Required Role**: User
 - **Exception**: 
@@ -1851,6 +1926,7 @@ HOST: BackendDomain:80/api
     + Attributes (NotFoundException)
 + Response 500 (application/json)
     + Attributes (Exception)
+
 ### Submit item inquiry [POST /users/{userId}/items/{itemId}/inquiries]
 - **Required Role**: User
 - **Exception**: 
@@ -1871,7 +1947,7 @@ HOST: BackendDomain:80/api
     + Headers 
         X-XSRF-TOKEN: {X-XSRF-TOKEN}
         Authorization: Bearer {BEARER-TOKEN} 
-    + Attributes (ReplyRequestDto)
+    + Attributes (InquriyRequestDto)
 + Response 201 (application/json)
     + Attributes (ResponseDto)
 + Response 400 (application/json)
@@ -1886,6 +1962,7 @@ HOST: BackendDomain:80/api
     + Attributes (NotFoundException)
 + Response 500 (application/json)
     + Attributes (Exception)
+
 ### Submit customer inquiry [POST /users/{userId}/customer/inquiries]
 - **Required Role**: User
 - **Exception**: 
@@ -1905,7 +1982,7 @@ HOST: BackendDomain:80/api
     + Headers 
         X-XSRF-TOKEN: {X-XSRF-TOKEN}
         Authorization: Bearer {BEARER-TOKEN} 
-    + Attributes (ReplyRequestDto)
+    + Attributes (InquriyRequestDto)
 + Response 201 (application/json)
     + Attributes (ResponseDto)
 + Response 400 (application/json)
@@ -1920,6 +1997,7 @@ HOST: BackendDomain:80/api
     + Attributes (NotFoundException)
 + Response 500 (application/json)
     + Attributes (Exception)
+
 ### View submitted inquiries [GET /users/{userId}/inquiries?page={page}&size={size}]
 - **Required Role**: User
 - **Exception**: 
@@ -1940,13 +2018,176 @@ HOST: BackendDomain:80/api
         Authorization: Bearer {BEARER-TOKEN} 
 + Response 200 (application/json)
     + Attributes (Pagination)
-        + content (array[InquriyResponseDto])
+        + content (array[InquiryResponseDto])
 + Response 403 (application/json)
     + Attributes (AccessDeniedException)
 + Response 404 (application/json)
     + Attributes (NotFoundException)
 + Response 500 (application/json)
     + Attributes (Exception)
+
+### Retrieve submitted inquiry details [GET /users/{userId}/inquiries/{inquiryId}]
+- **Required Role**: User
+- **Exception**: 
+    + Response Code: 400
+        + TypeMismatchException - Method argument (path variable or query parameter) cannot be converted to the expected type
+    + Response Code: 403
+        + AccessDeniedException 
+    + Response Code: 404
+        + NotFoundException -  The inquiry is not found
+    + Response Code: 500
+        + Exception - Internal server error occurred
++ Parameters 
+    + userId - Teh ID of the user
+    + inquiryId - The ID of the inquiry
++ Request 
+    + Headers 
+        Authorization: Bearer {BEARER-TOKEN} 
++ Response 200 (application/json)
+    + Attributes (InquiryDetailResponseDto)
++ Response 400 (application/json)
+    + Attributes (TypeMismatchException)
++ Response 403 (application/json)
+    + Attributes (AccessDeniedException)
++ Response 404 (application/json)
+    + Attributes (NotFoundException)
++ Response 500 (application/json)
+    + Attributes (Exception)
+
+### Delete inquiry [DELETE /users/{userId}/inquiries/{inquiryId}]
+- **Required Role**: User
+- **Exception**: 
+    + Response Code: 400
+        + TypeMismatchException - Method argument (path variable or query parameter) cannot be converted to the expected type
+    + Response Code: 403
+        + AccessDeniedException 
+    + Response Code: 404
+        + NotFoundException - User or inquiry not found
+    + Response Code: 500
+        + Exception - Internal server error occurred
++ Parameters 
+    + userId - The ID of the user
+    + inquiryId - The ID of the inquiry
++ Request
+    + Headers 
+        X-XSRF-TOKEN: {X-XSRF-TOKEN}
+        Authorization: Bearer {BEARER-TOKEN} 
++ Response 200 (application/json)
+    + Attributes (ResponseDto)
++ Response 403 (application/json)
+    + Attributes (AccessDeniedException)
++ Response 404 (application/json)
+    + Attributes (NotFoundException)
++ Response 500 (application/json)
+    + Attributes (Exception)
+
+### Respond to Parent Response [POST /users/{userId}/inquiries/{inquiryId}/responses/{responseId}]
+- **Required Role**: User
+- **Exception**: 
+    + Response Code: 400
+        + MethodArgumentNotValidException - Validation failed 
+        + TypeMismatchException - Method argument (path variable or query parameter) cannot be converted to the expected type
+    + Response Code: 403
+        + AccessDeniedException 
+    + Response Code: 404
+        + NotFoundException - User or inquiry or response not found
+    + Response Code: 500
+        + Exception - Internal server error occurred
++ Parameters 
+    + userId - The ID of the user
+    + inquiryId - The ID of the inquiry
+    + responseId - The ID of the parent response
++ Request (application/json)
+    + Headers 
+        X-XSRF-TOKEN: {X-XSRF-TOKEN}
+        Authorization: Bearer {BEARER-TOKEN} 
+    + Attributes (ReplyRequestDto)
++ Response 201 (application/json)
+    + Attributes (ResponseDto)
++ Response 400 (application/json)
+    + TypeMismatchException 
+    + Attributes (TypeMismatchException)
++ Response 400 (application/json)
+    + MethodArgumentNotValidException 
+    + Attributes (MethodArgumentNotValidException)
++ Response 403 (application/json)
+    + Attributes (AccessDeniedException)
++ Response 404 (application/json)
+    + Attributes (NotFoundException)
++ Response 500 (application/json)
+    + Attributes (Exception)
+
+### Edit Response [PATCH /users/{userId}/inquiries/{inquiryId}/responses/{responseId}]
+- **Required Role**: User
+- **Exception**: 
+    + Response Code: 400
+        + TypeMismatchException - Method argument (path variable or query parameter) cannot be converted to the expected type
+        + MethodArgumentNotValidException - Validation failed 
+    + Response Code: 403
+        + AccessDeniedException 
+    + Response Code: 404
+        + NotFoundException - User or inquiry or response not found
+    + Response Code: 409
+        + HasRelatedEntitiesException - The respond contains related entities (responses) and cannot be edited
+    + Response Code: 500
+        + Exception - Internal server error occurred
++ Parameters 
+    + inquiryId - The ID of the inquiry
+    + responseId - The ID of the response
++ Request (application/json)
+    + Headers 
+        X-XSRF-TOKEN: {X-XSRF-TOKEN}
+        Authorization: Bearer {BEARER-TOKEN} 
+    + Attributes (PatchReplyRequestDto)
++ Response 200 (application/json)
+    + Attributes (ResponseDto)
++ Response 400 (application/json)
+    + TypeMismatchException 
+    + Attributes (TypeMismatchException)
++ Response 400 (application/json)
+    + MethodArgumentNotValidException 
+    + Attributes (MethodArgumentNotValidException)
++ Response 403 (application/json)
+    + Attributes (AccessDeniedException)
++ Response 404 (application/json)
+    + Attributes (NotFoundException)
++ Response 409 (application/json)
+    + Attributes (HasRelatedEntitiesException)
++ Response 500 (application/json)
+    + Attributes (Exception)
+
+### Delete Response [DELETE /users/{userId}/inquiries/{inquiryId}/responses/{responseId}]
+- **Required Role**: User
+- **Exception**: 
+    + Response Code: 400
+        + TypeMismatchException - Method argument (path variable or query parameter) cannot be converted to the expected type
+    + Response Code: 403
+        + AccessDeniedException 
+    + Response Code: 404
+        + NotFoundException - User or inquiry or response not found
+    + Response Code: 409
+        + HasRelatedEntitiesException - The response contains related entities (responses) and cannot be deleted
+    + Response Code: 500
+        + Exception - Internal server error occurred
++ Parameters 
+    + userId - The ID of the user
+    + inquiryId - The ID of the inquiry
+    + responsId - The ID of the response
++ Request
+    + Headers 
+        X-XSRF-TOKEN: {X-XSRF-TOKEN}
+        Authorization: Bearer {BEARER-TOKEN} 
++ Response 200 (application/json)
+    + Attributes (ResponseDto)
++ Response 403 (application/json)
+    + Attributes (AccessDeniedException)
++ Response 404 (application/json)
+    + Attributes (NotFoundException)
++ Response 409 (application/json)
+    + Attributes (HasRelatedEntitiesException)
++ Response 500 (application/json)
+    + Attributes (Exception)
+
 
 ### Order items [POST /users/{userId}/orders]
 - **Required Role**: User
@@ -2125,43 +2366,7 @@ HOST: BackendDomain:80/api
 + Response 500 (application/json)
     + Attributes (Exception)
 
-### View inquiries [GET /inquiries?type={type}&status={status}&page={page}&size={size}]
-- **Required Role**: Public
-- **Exception**: 
-    + Response Code: 500
-        + Exception - Internal server error occurred
-+ Parameters 
-    + type - The type criteria (one of `item`, `customer`)
-    + status (optional)  - The status criteria (one of `resolved`, `unresolved`)
-    + page: `0` (number, optional) - The page number to retrieve, starting from 0
-    + size: `10` (number, optional) - The number of items per page
-+ Request 
-+ Response 200 (application/json)
-    + Attributes (Pagination)
-        + content (array[InquriyResponseDto])
-+ Response 500 (application/json)
-    + Attributes (Exception)
 
-### View inquiry details [GET /inquiries/{inquiryId}]
-- **Required Role**: Public
-- **Exception**: 
-    + Response Code: 400
-        + TypeMismatchException - Method argument (path variable or query parameter) cannot be converted to the expected type
-    + Response Code: 404
-        + NotFoundException -  The inquiry is not found
-    + Response Code: 500
-        + Exception - Internal server error occurred
-+ Parameters 
-    + inquiryId - The ID of the inquiry
-+ Request 
-+ Response 200 (application/json)
-    + Attributes (InquiryDetailResponseDto)
-+ Response 400 (application/json)
-    + Attributes (TypeMismatchException)
-+ Response 404 (application/json)
-    + Attributes (NotFoundException)
-+ Response 500 (application/json)
-    + Attributes (Exception)
 
 # Data Structures
 
@@ -2344,12 +2549,14 @@ HOST: BackendDomain:80/api
 + title: string - Title must be between 3 and 100 characters. 
 + content: string - Content must be between 5 and 500 characters. 
 
+## InquriyRequestDto (object)
++ title: string - Title must be between 3 and 100 characters. 
++ content: string - Content must be between 5 and 500 characters. 
+
 ## ReplyRequestDto (object)
-+ title: string - Title must be between 3 and 100 characters. Title is a required field.
 + content: string - Content must be between 5 and 500 characters. Content is a required field.
 
 ## PatchReplyRequestDto (object)
-+ title: string - Title must be between 3 and 100 characters. 
 + content: string - Content must be between 5 and 500 characters. 
 
 ## OrderItemResponseDto (object)
@@ -2413,25 +2620,27 @@ HOST: BackendDomain:80/api
 ## UpdateQuantityRequestDto (object)
 + quantity : number - Quantity must be greater than or equal to 1. Quantity is a required field.
 
-## InquriyResponseDto (object)
+
+## InquiryDetailResponseDto (object)
++ id: number
++ itemName: string
++ title: string
++ content: string
++ isResolved: boolean
++ registrationDate: date
++ responses (array[replyResponseDto])
+
+### replyResponseDto (object)
++ id: number 
++ content: string 
++ registrationDate: date 
++ childResponses (array[replyResponseDto]) - A list of child responses related to this response
+
+## InquiryResponseDto (object)
 + id: number
 + itemName: string 
 + title: string 
 + isResolved: boolean
-
-## topParent (object)
-+ itemName: string 
-+ title: string 
-+ content: string 
-+ isResolved: boolean
-
-## reply (object)
-+ title: string
-+ content: string 
-
-## InquiryDetailResponseDto (object)
-+ topParent (topParent)
-+ reply (array[reply])
 
 ## ItemSummaryResponseDto (object)
 + name: string
