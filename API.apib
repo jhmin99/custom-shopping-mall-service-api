@@ -1052,6 +1052,8 @@ HOST: BackendDomain:80/api
 ### View inquiries [GET /admin/inquiries?type={type}&status={status}&page={page}&size={size}]
 - **Required Role**: Admin
 - **Exception**: 
+    + Response Code: 400
+        + TypeMismatchException - Method argument (path variable or query parameter) cannot be converted to the expected type
     + Response Code: 403
         + AccessDeniedException 
     + Response Code: 500
@@ -1067,6 +1069,8 @@ HOST: BackendDomain:80/api
 + Response 200 (application/json)
     + Attributes (Pagination)
         + content (array[InquiryResponseDto])
++ Response 400 (application/json)
+    + Attributes (TypeMismatchException)
 + Response 403 (application/json)
     + Attributes (AccessDeniedException)
 + Response 500 (application/json)
@@ -1206,7 +1210,7 @@ HOST: BackendDomain:80/api
 + Response 500 (application/json)
     + Attributes (Exception)
 
-### Respond to parent Response [POST /admin/inquiries/{inquiries}/responses/{responseId}]
+### Respond to parent Response [POST /admin/inquiries/{inquiryId}/responses/{responseId}]
 - **Required Role**: Admin
 - **Exception**: 
     + Response Code: 400
