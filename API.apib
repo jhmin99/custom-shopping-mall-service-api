@@ -2597,6 +2597,7 @@ HOST: BackendDomain:80/api
 + address: string - Address must be between 5 and 200 characters. Address is a required field.
 + addressDetail: Address detail must be between 5 and 200 characters. Address detail is a required field.
 ## NoticeResponseDto (object)
++ id: number
 + title: string 
 + registrationDate: date 
 ## NoticeDetailResponseDto (object)
@@ -2627,10 +2628,11 @@ HOST: BackendDomain:80/api
 
 ## InquiryDetailResponseDto (object)
 + id: number
++ type: string 
 + itemName: string
 + title: string
 + content: string
-+ isResolved: boolean
++ status: string
 + registrationDate: date
 + responses (array[replyResponseDto])
 
@@ -2642,9 +2644,10 @@ HOST: BackendDomain:80/api
 
 ## InquiryResponseDto (object)
 + id: number
++ type: string 
 + itemName: string 
 + title: string 
-+ isResolved: boolean
++ status: string
 
 ## ItemSummaryResponseDto (object)
 + name: string
