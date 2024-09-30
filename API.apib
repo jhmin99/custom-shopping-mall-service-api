@@ -1604,6 +1604,7 @@ HOST: BackendDomain:80/api
     + Headers 
         X-XSRF-TOKEN: {X-XSRF-TOKEN}
         Authorization: Bearer {BEARER-TOKEN} 
+    + Attributes(AddCartItemRequestDto)
 + Response 200 (application/json)
     + Attributes (ResponseDto)
 + Response 400 (application/json)
@@ -2596,10 +2597,12 @@ HOST: BackendDomain:80/api
 + zipCode: number - Zip code is a required field.
 + address: string - Address must be between 5 and 200 characters. Address is a required field.
 + addressDetail: Address detail must be between 5 and 200 characters. Address detail is a required field.
+
 ## NoticeResponseDto (object)
 + id: number
 + title: string 
 + registrationDate: date 
+
 ## NoticeDetailResponseDto (object)
 + title: string 
 + content: string 
@@ -2621,6 +2624,9 @@ HOST: BackendDomain:80/api
 + expirationDate: date
 + isValid: boolean
 + isUsed: boolean
+
+## AddCartItemRequestDto (object)
++ quantity : number - Quantity must be greater than or equal to 1. Quantity is a required field.
 
 ## UpdateQuantityRequestDto (object)
 + quantity : number - Quantity must be greater than or equal to 1. Quantity is a required field.
