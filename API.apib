@@ -1589,6 +1589,7 @@ HOST: BackendDomain:80/api
 - **Required Role**: User
 - **Exception**: 
     + Response Code: 400
+        + MethodArgumentNotValidException - Validation failed 
         + TypeMismatchException - Method argument (path variable or query parameter) cannot be converted to the expected type
         + InvalidOperationException - The item is invalid for some reasons
     + Response Code: 403
