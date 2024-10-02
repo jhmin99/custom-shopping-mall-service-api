@@ -1740,37 +1740,6 @@ HOST: BackendDomain:80/api
     + Attributes (NotFoundException)
 + Response 500 (application/json)
     + Attributes (Exception)
-
-### Move items from the wishlist to the cart [POST /users/{userId}/wishlist/{itemId}/move-to-cart]
-- **Required Role**: User
-- **Exception**: 
-    + Response Code: 400
-        + TypeMismatchException - Method argument (path variable or query parameter) cannot be converted to the expected type
-        + InvalidOperationException - Out of stock or item is invalid for some reasons 
-    + Response Code: 403
-        + AccessDeniedException 
-    + Response Code: 404
-        + NotFoundException -  User or item not found
-    + Response Code: 500
-        + Exception - Internal server error occurred
-+ Parameters
-    + userId  - The ID of the user
-    + itemId  - The ID of the item
-+ Request 
-    + Headers 
-        X-XSRF-TOKEN: {X-XSRF-TOKEN}
-        Authorization: Bearer {BEARER-TOKEN} 
-+ Response 200 (application/json)
-    + Attributes (ResponseDto)
-+ Response 400 (application/json)
-    + TypeMismatchException, InvalidOperationException 
-    + Attributes (TypeMismatchException)
-+ Response 403 (application/json)
-    + Attributes (AccessDeniedException)
-+ Response 404 (application/json)
-    + Attributes (NotFoundException)
-+ Response 500 (application/json)
-    + Attributes (Exception)
     
 ### Submit review for purchased items [POST /users/{userId}/items/{itemId}/reviews]
 - **Required Role**: User
