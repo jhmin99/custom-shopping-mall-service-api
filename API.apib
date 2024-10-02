@@ -1554,38 +1554,7 @@ HOST: BackendDomain:80/api
 + Response 500 (application/json)
     + Attributes (Exception)
 
-### Apply coupon [POST /users/{userId}/coupons/{couponId}/apply]
-- **Required Role**: User
-- **Exception**: 
-    + Response Code: 400
-        + TypeMismatchException - Method argument (path variable or query parameter) cannot be converted to the expected type
-        + InvalidOperationException - Expired or has already been used
-    + Response Code: 403
-        + AccessDeniedException 
-    + Response Code: 404
-        + NotFoundException -  The user does not exist, the coupon does not exist, or the user does not have the specified coupon
-    + Response Code: 500
-        + Exception - Internal server error occurred
-+ Parameters
-    + userId  - The ID of the user
-    + couponId  - The ID of the coupon
-+ Request 
-    + Headers 
-        X-XSRF-TOKEN: {X-XSRF-TOKEN}
-        Authorization: Bearer {BEARER-TOKEN} 
-+ Response 200 (application/json)
-    + Attributes (ResponseDto)
-+ Response 400 (application/json)
-    + TypeMismatchException, InvalidOperationException 
-    + Attributes (TypeMismatchException)
-+ Response 403 (application/json)
-    + Attributes (AccessDeniedException)
-+ Response 404 (application/json)
-    + Attributes (NotFoundException)
-+ Response 500 (application/json)
-    + Attributes (Exception)
-
-### Add items to the cart [POST /users/{userId}/cart/{itemId}]
+### Add items to the cart [POST /users/{userId}/carts/{itemId}]
 - **Required Role**: User
 - **Exception**: 
     + Response Code: 400
@@ -1618,7 +1587,7 @@ HOST: BackendDomain:80/api
 + Response 500 (application/json)
     + Attributes (Exception)
 
-### Update item quantities [PATCH /users/{userId}/cart/{itemId}]
+### Update item quantities [PATCH /users/{userId}/carts/{itemId}]
 - **Required Role**: User
 - **Exception**: 
     + Response Code: 400
@@ -1654,7 +1623,7 @@ HOST: BackendDomain:80/api
 + Response 500 (application/json)
     + Attributes (Exception)
 
-### Remove items from the Cart [DELETE /users/{userId}/cart/{itemId}]
+### Remove items from the Cart [DELETE /users/{userId}/carts/{itemId}]
 - **Required Role**: User
 - **Exception**: 
     + Response Code: 400
@@ -1683,7 +1652,70 @@ HOST: BackendDomain:80/api
 + Response 500 (application/json)
     + Attributes (Exception)
 
-### Add items to the wishlist [POST /users/{userId}/wishlist/{itemId}]
+
+### Apply coupon [POST /users/{userId}/carts/coupons/{couponId}/apply]
+- **Required Role**: User
+- **Exception**: 
+    + Response Code: 400
+        + TypeMismatchException - Method argument (path variable or query parameter) cannot be converted to the expected type
+        + InvalidOperationException - Expired or has already been used
+    + Response Code: 403
+        + AccessDeniedException 
+    + Response Code: 404
+        + NotFoundException -  The user does not exist or the user does not have the specified coupon
+    + Response Code: 500
+        + Exception - Internal server error occurred
++ Parameters
+    + userId  - The ID of the user
+    + couponId  - The ID of the coupon
++ Request 
+    + Headers 
+        X-XSRF-TOKEN: {X-XSRF-TOKEN}
+        Authorization: Bearer {BEARER-TOKEN} 
++ Response 200 (application/json)
+    + Attributes (ResponseDto)
++ Response 400 (application/json)
+    + TypeMismatchException, InvalidOperationException 
+    + Attributes (TypeMismatchException)
++ Response 403 (application/json)
+    + Attributes (AccessDeniedException)
++ Response 404 (application/json)
+    + Attributes (NotFoundException)
++ Response 500 (application/json)
+    + Attributes (Exception)
+
+
+### Remove applied coupon [DELETE /users/{userId}/carts/coupons/remove]
+- **Required Role**: User
+- **Exception**: 
+    + Response Code: 400
+        + TypeMismatchException - Method argument (path variable or query parameter) cannot be converted to the expected type
+        + InvalidOperationException - No coupon applied to remove
+    + Response Code: 403
+        + AccessDeniedException 
+    + Response Code: 404
+        + NotFoundException -  The user does not exist
+    + Response Code: 500
+        + Exception - Internal server error occurred
++ Parameters
+    + userId  - The ID of the user
++ Request 
+    + Headers 
+        X-XSRF-TOKEN: {X-XSRF-TOKEN}
+        Authorization: Bearer {BEARER-TOKEN} 
++ Response 200 (application/json)
+    + Attributes (ResponseDto)
++ Response 400 (application/json)
+    + TypeMismatchException, InvalidOperationException 
+    + Attributes (TypeMismatchException)
++ Response 403 (application/json)
+    + Attributes (AccessDeniedException)
++ Response 404 (application/json)
+    + Attributes (NotFoundException)
++ Response 500 (application/json)
+    + Attributes (Exception)
+
+### Add items to the wishlist [POST /users/{userId}/wishlists/{itemId}]
 - **Required Role**: User
 - **Exception**: 
     + Response Code: 400
@@ -1712,7 +1744,7 @@ HOST: BackendDomain:80/api
 + Response 500 (application/json)
     + Attributes (Exception)
 
-### Remove items from the wishlist [DELETE /users/{userId}/wishlist/{itemId}]
+### Remove items from the wishlist [DELETE /users/{userId}/wishlists/{itemId}]
 - **Required Role**: User
 - **Exception**: 
     + Response Code: 400
