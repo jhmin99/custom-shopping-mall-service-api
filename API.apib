@@ -1146,6 +1146,7 @@ HOST: BackendDomain:80/api
     + Response Code: 400
         + TypeMismatchException - Method argument (path variable or query parameter) cannot be converted to the expected type
         + MethodArgumentNotValidException - Validation failed 
+        + InvalidOperationException - The response does not belong to the specified inquiry, or other invalid operations were attempted
     + Response Code: 403
         + AccessDeniedException 
     + Response Code: 404
@@ -1184,6 +1185,7 @@ HOST: BackendDomain:80/api
 - **Exception**: 
     + Response Code: 400
         + TypeMismatchException - Method argument (path variable or query parameter) cannot be converted to the expected type
+        + InvalidOperationException - The response does not belong to the specified inquiry, or other invalid operations were attempted
     + Response Code: 403
         + AccessDeniedException 
     + Response Code: 404
@@ -1216,6 +1218,7 @@ HOST: BackendDomain:80/api
     + Response Code: 400
         + MethodArgumentNotValidException - Validation failed 
         + TypeMismatchException - Method argument (path variable or query parameter) cannot be converted to the expected type
+        + InvalidOperationException - The response does not belong to the specified inquiry, or other invalid operations were attempted
     + Response Code: 403
         + AccessDeniedException 
     + Response Code: 404
@@ -1802,6 +1805,7 @@ HOST: BackendDomain:80/api
         {
             "title": string - Title must be between 3 and 100 characters. Title is a required field.
             "content": string - Content must be between 5 and 500 characters. Content is a required field.
+            "rating": 0 - Rating must be a number between 0 and 5. (0: no stars, 1-5: stars)
         }
 
         --boundary_string
@@ -1999,6 +2003,7 @@ HOST: BackendDomain:80/api
     + Response Code: 400
         + MethodArgumentNotValidException - Validation failed 
         + TypeMismatchException - Method argument (path variable or query parameter) cannot be converted to the expected type
+        + InvalidOperationException - The response does not belong to the specified inquiry, or other invalid operations were attempted
     + Response Code: 403
         + AccessDeniedException 
     + Response Code: 404
@@ -2035,6 +2040,7 @@ HOST: BackendDomain:80/api
     + Response Code: 400
         + TypeMismatchException - Method argument (path variable or query parameter) cannot be converted to the expected type
         + MethodArgumentNotValidException - Validation failed 
+        + InvalidOperationException - The response does not belong to the specified inquiry, or other invalid operations were attempted
     + Response Code: 403
         + AccessDeniedException 
     + Response Code: 404
@@ -2073,6 +2079,7 @@ HOST: BackendDomain:80/api
 - **Exception**: 
     + Response Code: 400
         + TypeMismatchException - Method argument (path variable or query parameter) cannot be converted to the expected type
+        + InvalidOperationException - The response does not belong to the specified inquiry, or other invalid operations were attempted
     + Response Code: 403
         + AccessDeniedException 
     + Response Code: 404
